@@ -1,14 +1,14 @@
 import { ContainerBuilder, YamlFileLoader } from 'node-dependency-injection';
 import path from 'path';
 
-const getContainer = async () => {
-  const container = new ContainerBuilder(true, path.join(__dirname));
-  const loader = new YamlFileLoader(container);
-  const env = process.env.NODE_ENV ?? 'dev';
+const getContainer = async (): Promise<ContainerBuilder> => {
+	const container = new ContainerBuilder(true, path.join(__dirname));
+	const loader = new YamlFileLoader(container);
+	const env = process.env.NODE_ENV ?? 'dev';
 
-  await loader.load(path.resolve(`${__dirname}/application_${env}.yaml`));
+	await loader.load(path.resolve(`${__dirname}/application_${env}.yaml`));
 
-  return container;
+	return container;
 };
 
 export default getContainer;
