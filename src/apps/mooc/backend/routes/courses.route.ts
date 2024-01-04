@@ -1,9 +1,10 @@
 import { Request, Response, Router } from 'express';
 
 import { CoursePutController } from '../controllers/CoursePutController';
-import container from '../dependency-injection';
+import getContainer from '../dependency-injection';
 
-export const register = (router: Router): void => {
+export const register = async (router: Router): Promise<void> => {
+  const container = await getContainer();
 	const coursePutController = container.get<CoursePutController>(
 		'Apps.mooc.controllers.CoursePutController'
 	);
