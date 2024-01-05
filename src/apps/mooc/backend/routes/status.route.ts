@@ -1,11 +1,9 @@
 import { Request, Response, Router } from 'express';
-
+import { Container } from 'typedi';
 import StatusController from '../controllers/StatusGetController';
-import getContainer from '../dependency-injection';
 
 export const register = async (router: Router): Promise<void> => {
-	const container = await getContainer();
-	const controller = container.get<StatusController>('Apps.mooc.controllers.StatusGetController');
+	const controller = Container.get(StatusController);
 	router.get('/status', (req: Request, res: Response) => {
 		controller.run(req, res);
 	});
