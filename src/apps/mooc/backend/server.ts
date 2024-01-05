@@ -53,9 +53,9 @@ export class Server {
 		return this.httpServer;
 	}
 
-  getExpressApp(): Server['express'] {
-    return this.express;
-  }
+	getExpressApp(): Server['express'] {
+		return this.express;
+	}
 
 	async stop(): Promise<void> {
 		return new Promise((resolve, reject) => {

@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+
 import { MoocBackendApp } from './MoocBackendApp';
 
 try {

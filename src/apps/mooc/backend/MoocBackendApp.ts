@@ -14,10 +14,6 @@ export class MoocBackendApp {
 		return this.server?.getHTTPServer();
 	}
 
-  get appExpress() {
-    return this.server?.getExpressApp();
-  }
-
 	async stop(): Promise<void> {
 		return this.server?.stop();
 	}

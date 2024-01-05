@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
-import { Service } from 'typedi';
 import httpStatus from 'http-status';
+import { Service } from 'typedi';
+
 import { Controller } from './Controller';
 
 @Service()
