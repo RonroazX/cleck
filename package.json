@@ -41,7 +41,6 @@
     "glob": "^10.3.10",
     "helmet": "^7.1.0",
     "http-status": "^1.7.3",
-    "node-dependency-injection": "^3.1.2",
     "nunjucks": "^3.2.4",
     "reflect-metadata": "^0.2.1",
     "ts-node": "^10.9.2",
