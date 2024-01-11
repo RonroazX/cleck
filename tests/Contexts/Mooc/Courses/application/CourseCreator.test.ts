@@ -1,6 +1,9 @@
 import { CourseCreator } from '../../../../../src/Contexts/Mooc/Courses/application/CourseCreator';
 import { Course } from '../../../../../src/Contexts/Mooc/Courses/domain/Course';
-import { Uuid } from '../../../../../src/Contexts/Shared/domain/value-object/Uuid';
+import { CourseDuration } from '../../../../../src/Contexts/Mooc/Courses/domain/CourseDuration';
+import { CourseName } from '../../../../../src/Contexts/Mooc/Courses/domain/CourseName';
+import { CourseNameLengthExceed } from '../../../../../src/Contexts/Mooc/Courses/domain/CourseNameLengthExceed';
+import { CourseId } from '../../../../../src/Contexts/Mooc/Shared/domain/Courses/CourseId';
 import { CourseRepositoryMock } from '../__mocks__/CourseRepositoryMock';
 
 let repository: CourseRepositoryMock;
@@ -13,14 +16,31 @@ beforeEach(() => {
 
 describe('CourseCreator', () => {
 	it('should create a valid course', async () => {
-		const id = new Uuid('0766c602-d4d4-48b6-9d50-d3253123275e');
+		const id = '0766c602-d4d4-48b6-9d50-d3253123275e';
 		const name = 'some-name';
 		const duration = 'some-duration';
 
-		const course = new Course({ id, name, duration });
+		const course = new Course({
+			id: new CourseId(id),
+			name: new CourseName(name),
+			duration: new CourseDuration(duration)
+		});
 
-		await creator.run({ id: id.value, name, duration });
+		await creator.run({ id, name, duration });
 
 		repository.assertSaveHaveBeenCalledWith(course);
+	});
+
+	it('should throw an error', () => {
+		const id = '0766c602-d4d4-48b6-9d50-d3253123275e';
+		const name = 'some-name'.repeat(30);
+		const duration = 'some-duration';
+		expect(() => {
+			new Course({
+				id: new CourseId(id),
+				name: new CourseName(name),
+				duration: new CourseDuration(duration)
+			});
+		}).toThrow(CourseNameLengthExceed);
 	});
 });
