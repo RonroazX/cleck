@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { body } from 'express-validator';
-import { Container } from 'typedi';
 
 import { CoursePutController } from '../controllers/CoursePutController';
+import container from '../dependency-injection/configureContainer';
 import { validateSchema } from '.';
 
 export const register = (router: Router): void => {
@@ -12,7 +12,7 @@ export const register = (router: Router): void => {
 		body('duration').isString().withMessage('duration must be a string')
 	];
 
-	const coursePutController = Container.get(CoursePutController);
+	const coursePutController = container.resolve<CoursePutController>('coursePutController');
 	router.put(
 		'/courses/:id',
 		reqSchema,

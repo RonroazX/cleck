@@ -1,11 +1,9 @@
 import { deserialize, serialize } from 'bson';
 import fs from 'fs';
-import { Service } from 'typedi';
 
 import { Course } from '../../domain/Course';
 import { CourseRepository } from '../../domain/CourseRepository';
 
-@Service()
 export class FileCourseRepository implements CourseRepository {
 	private readonly FILE_PATH = `${__dirname}/courses`;
 
