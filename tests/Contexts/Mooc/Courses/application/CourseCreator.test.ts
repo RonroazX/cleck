@@ -9,7 +9,7 @@ let creator: CourseCreator;
 
 beforeEach(() => {
 	repository = new CourseRepositoryMock();
-	creator = new CourseCreator({courseRepository: repository});
+	creator = new CourseCreator({ courseRepository: repository });
 });
 
 describe('CourseCreator', () => {
