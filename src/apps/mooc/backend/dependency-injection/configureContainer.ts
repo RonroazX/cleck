@@ -1,5 +1,6 @@
 import * as awilix from 'awilix';
 
+import { MongoEnvironmentArranger } from '../../../../../tests/Contexts/Shared/infrastructure/mongo/MongoEnvironmentArranger';
 import { CourseCreator } from '../../../../Contexts/Mooc/Courses/application/CourseCreator';
 import { MongoCourseRepository } from '../../../../Contexts/Mooc/Courses/infrastructure/persistance/MongoCourseRepository';
 import { MongoConfigFactory } from '../../../../Contexts/Mooc/Shared/infrastructure/persistance/mongo/MongoConfigFactory';
@@ -23,7 +24,8 @@ container.register({
 	courseRepository: awilix.asClass(MongoCourseRepository).singleton(),
 	courseCreator: awilix.asClass(CourseCreator).singleton(),
 	coursePutController: awilix.asClass(CoursePutController).singleton(),
-	statusGetController: awilix.asClass(StatusGetController).singleton()
+	statusGetController: awilix.asClass(StatusGetController).singleton(),
+	environmentArranger: awilix.asClass(MongoEnvironmentArranger).singleton()
 });
 
 export default container;
