@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { Request, Response, Router } from 'express';
 import { body } from 'express-validator';
 
 import { CoursePutController } from '../controllers/CoursePutController';
@@ -13,12 +13,7 @@ export const register = (router: Router): void => {
 	];
 
 	const coursePutController = container.resolve<CoursePutController>('coursePutController');
-	router.put(
-		'/courses/:id',
-		reqSchema,
-		validateSchema,
-		(req: Request, res: Response, next: NextFunction) => {
-			coursePutController.run(req, res).catch(next);
-		}
-	);
+	router.put('/courses/:id', reqSchema, validateSchema, (req: Request, res: Response) => {
+		coursePutController.run(req, res);
+	});
 };

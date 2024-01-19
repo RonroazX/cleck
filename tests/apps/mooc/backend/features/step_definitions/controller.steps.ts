@@ -1,10 +1,10 @@
-import 'reflect-metadata';
-
+import { AfterAll, BeforeAll, Given, Then } from '@cucumber/cucumber';
 import assert from 'assert';
-import { AfterAll, BeforeAll, Given, Then } from 'cucumber';
 import request from 'supertest';
 
+import container from '../../../../../../src/apps/mooc/backend/dependency-injection/configureContainer';
 import { MoocBackendApp } from '../../../../../../src/apps/mooc/backend/MoocBackendApp';
+import { EnvironmentArranger } from '../../../../../Contexts/Shared/infrastructure/arranger/EnvironmentArranger';
 
 let _request: request.Test;
 let application: MoocBackendApp;
@@ -27,18 +27,19 @@ Given('I send a PUT request to {string} with body:', (route: string, body: strin
 	}
 	_request = request(application.httpServer)
 		.put(route)
-		.send(JSON.parse(body) as object);
+		.send(JSON.parse(body) as Record<string, unknown>);
 });
 
 Then('the response should be empty', () => {
 	assert.deepStrictEqual(_response.body, {});
 });
 
-BeforeAll(() => {
+BeforeAll(async () => {
 	application = new MoocBackendApp();
-	application.start();
+	await application.start();
 });
 
-AfterAll(() => {
-	application.stop();
+AfterAll(async () => {
+	await (await container.resolve<Promise<EnvironmentArranger>>('environmentArranger')).close();
+	await application.stop();
 });
