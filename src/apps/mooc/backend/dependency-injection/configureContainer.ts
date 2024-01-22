@@ -8,6 +8,8 @@ import { MongoClientFactory } from '../../../../Contexts/Shared/infrastructure/p
 import MongoConfig from '../../../../Contexts/Shared/infrastructure/persistance/mongo/MongoConfig';
 import { CoursePutController } from '../controllers/CoursePutController';
 import StatusGetController from '../controllers/StatusGetController';
+import { LoginPostController } from '../controllers/LoginPostController';
+import { SignupPostController } from '../controllers/SignupPostController';
 
 const container = awilix.createContainer({
 	injectionMode: awilix.InjectionMode.PROXY,
@@ -24,6 +26,8 @@ container.register({
 	courseRepository: awilix.asClass(MongoCourseRepository).singleton(),
 	courseCreator: awilix.asClass(CourseCreator).singleton(),
 	coursePutController: awilix.asClass(CoursePutController).singleton(),
+  loginPostController: awilix.asClass(LoginPostController).singleton(),
+  signupPostController: awilix.asClass(SignupPostController).singleton(),
 	statusGetController: awilix.asClass(StatusGetController).singleton(),
 	environmentArranger: awilix.asClass(MongoEnvironmentArranger).singleton()
 });
