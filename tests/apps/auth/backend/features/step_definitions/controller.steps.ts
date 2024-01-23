@@ -1,8 +1,9 @@
 import { AfterAll, BeforeAll, Given, Then } from '@cucumber/cucumber';
 import assert from 'assert';
 import request from 'supertest';
-import container from '../../../../../../src/apps/cleck/backend/dependency-injection/configureContainer';
+
 import { CleckBackendApp } from '../../../../../../src/apps/cleck/backend/CleckBackendApp';
+import container from '../../../../../../src/apps/cleck/backend/dependency-injection/configureContainer';
 import { EnvironmentArranger } from '../../../../../Contexts/Shared/infrastructure/arranger/EnvironmentArranger';
 
 let _request: request.Test;

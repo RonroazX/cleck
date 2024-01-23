@@ -5,8 +5,8 @@ const common = [
 
 const cleck_backend = [
 	...common,
-	'tests/apps/accessManagement/backend/features/**/*.feature',
-	'--require tests/apps/accessManagement/backend/features/step_definitions/*.steps.ts'
+	'tests/apps/Auth/backend/features/**/*.feature',
+	'--require tests/apps/Auth/backend/features/step_definitions/*.steps.ts'
 ].join(' ');
 
 module.exports = {

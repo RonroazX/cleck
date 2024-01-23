@@ -1,5 +1,6 @@
 import { Request, Response, Router } from 'express';
 import { body } from 'express-validator';
+
 import { LoginPostController } from '../controllers/LoginPostController';
 import { SignupPostController } from '../controllers/SignupPostController';
 import container from '../dependency-injection/configureContainer';

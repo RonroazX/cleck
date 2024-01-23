@@ -22,7 +22,7 @@ export class MongoEnvironmentArranger extends EnvironmentArranger {
 		const client = await this.client();
 
 		for (const collection of collections) {
-			client.db().collection(collection).deleteMany({});
+			await client.db().collection(collection).deleteMany({});
 		}
 	}
 

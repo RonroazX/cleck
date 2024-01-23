@@ -1,8 +1,9 @@
 import * as awilix from 'awilix';
+
 import { MongoEnvironmentArranger } from '../../../../../tests/Contexts/Shared/infrastructure/mongo/MongoEnvironmentArranger';
-import { UserCreator } from '../../../../Contexts/AccessManagement/Users/application/UserCreator';
-import { MongoUserRepository } from '../../../../Contexts/AccessManagement/Users/infrastructure/MongoUserRepository';
-import { MongoConfigFactory } from '../../../../Contexts/AccessManagement/Shared/infrastructure/persistance/mongo/MongoConfigFactory';
+import { MongoConfigFactory } from '../../../../Contexts/Auth/Shared/infrastructure/persistance/mongo/MongoConfigFactory';
+import { UserCreator } from '../../../../Contexts/Auth/Users/application/UserCreator';
+import { MongoUserRepository } from '../../../../Contexts/Auth/Users/infrastructure/MongoUserRepository';
 import { MongoClientFactory } from '../../../../Contexts/Shared/infrastructure/persistance/mongo/MongoClientFactory';
 import MongoConfig from '../../../../Contexts/Shared/infrastructure/persistance/mongo/MongoConfig';
 import { LoginPostController } from '../controllers/LoginPostController';

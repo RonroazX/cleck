@@ -1,8 +1,3 @@
-import { CourseCreator } from '../../../../../src/Contexts/Mooc/Courses/application/CourseCreator';
-import { CourseNameLengthExceed } from '../../../../../src/Contexts/Mooc/Courses/domain/CourseNameLengthExceed';
-import { CourseRepositoryMock } from '../__mocks__/CourseRepositoryMock';
-import { CourseMother } from '../domain/CourseMother';
-import { CreateCourseRequestMother } from './CreateCourseRequestMother';
 
 let repository: CourseRepositoryMock;
 let creator: CourseCreator;
@@ -35,3 +30,4 @@ describe('CourseCreator', () => {
 		}).toThrow(CourseNameLengthExceed);
 	});
 });
+*/

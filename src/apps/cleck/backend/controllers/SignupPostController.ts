@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import httpStatus from 'http-status';
-import { UserCreator } from '../../../../Contexts/AccessManagement/Users/application/UserCreator';
+
+import { UserCreator } from '../../../../Contexts/Auth/Users/application/UserCreator';
 import { Controller } from './Controller';
 
 type SignupPostRequest = Request & {
