@@ -1,5 +1,0 @@
-{
-  "mongo": {
-    "url": "mongodb://localhost:28017/mooc-backend-test"
-  }
-}
