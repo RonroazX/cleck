@@ -1,5 +1,4 @@
 import * as awilix from 'awilix';
-
 import { MongoEnvironmentArranger } from '../../../../../tests/Contexts/Shared/infrastructure/mongo/MongoEnvironmentArranger';
 import { MongoConfigFactory } from '../../../../Contexts/Auth/Shared/infrastructure/persistance/mongo/MongoConfigFactory';
 import { UserCreator } from '../../../../Contexts/Auth/Users/application/UserCreator';

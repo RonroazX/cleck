@@ -3,6 +3,7 @@ import httpStatus from 'http-status';
 
 import { UserCreator } from '../../../../Contexts/Auth/Users/application/UserCreator';
 import { Controller } from './Controller';
+import { UserCreatorRequest } from '../../../../Contexts/Auth/Users/application/UserCreatorRequest';
 
 type SignupPostRequest = Request & {
 	body: {
@@ -21,7 +22,7 @@ export class SignupPostController implements Controller {
 
 	async run(req: SignupPostRequest, res: Response): Promise<void> {
 		try {
-			const { username, email, password } = req.body;
+			const { username, email, password }: UserCreatorRequest = req.body;
 
 			await this.userCreator.run({ username, email, password });
 

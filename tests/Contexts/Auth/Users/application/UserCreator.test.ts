@@ -9,8 +9,8 @@ beforeEach(() => {
   creator = new UserCreator({ userRepository: repository });
 });
 
-describe('CourseCreator', () => {
-  it('should create a valid course', async () => {
+describe('UserCreator', () => {
+  it('should create a valid user', async () => {
     const request = CreateCourseRequestMother.random();
 
     const course = CourseMother.fromRequest(request);
