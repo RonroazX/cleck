@@ -5,7 +5,7 @@ import { UserHashedPassword } from './UserHashedPassword';
 import { UserName } from './UserName';
 
 interface UserParams {
-	id: UserId;
+  id: UserId;
 	username: UserName;
 	email: UserEmail;
 	password: UserHashedPassword;

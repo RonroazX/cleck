@@ -8,6 +8,7 @@ import MongoConfig from '../../../../Contexts/Shared/infrastructure/persistance/
 import { LoginPostController } from '../controllers/LoginPostController';
 import { SignupPostController } from '../controllers/SignupPostController';
 import StatusGetController from '../controllers/StatusGetController';
+import { HashUserPasswordService } from '../../../../Contexts/Auth/Users/application/HashUserPassword';
 
 const container = awilix.createContainer({
 	injectionMode: awilix.InjectionMode.PROXY,
@@ -26,7 +27,8 @@ container.register({
 	loginPostController: awilix.asClass(LoginPostController).singleton(),
 	signupPostController: awilix.asClass(SignupPostController).singleton(),
 	statusGetController: awilix.asClass(StatusGetController).singleton(),
-	environmentArranger: awilix.asClass(MongoEnvironmentArranger).singleton()
+	environmentArranger: awilix.asClass(MongoEnvironmentArranger).singleton(),
+  hashService: awilix.asClass(HashUserPasswordService).singleton(),
 });
 
 export default container;

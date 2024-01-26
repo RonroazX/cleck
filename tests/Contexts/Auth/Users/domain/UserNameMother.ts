@@ -7,6 +7,6 @@ export class UserNameMother {
   }
 
   static random(): UserName {
-    return this.create(WordMother.random({ minLength: 5, maxLength: 35}))
+    return this.create(WordMother.random(8))
   }
 }

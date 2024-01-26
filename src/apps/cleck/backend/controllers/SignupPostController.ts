@@ -24,7 +24,7 @@ export class SignupPostController implements Controller {
 		try {
 			const { username, email, password }: UserCreatorRequest = req.body;
 
-			await this.userCreator.run({ username, email, password });
+			await this.userCreator.run({ username, email, password});
 
 			res.status(httpStatus.CREATED).send();
 		} catch (e) {

@@ -1,8 +1,8 @@
-import { InvalidArgumentError } from '../../../Shared/domain/value-object/InvalidArgumentError';
 import { StringValueObject } from '../../../Shared/domain/value-object/StringValueObject';
 import AMConstants from '../../Shared/utils/constants';
 import { HashUserPasswordService } from '../application/HashUserPassword';
 import { UserHashedPassword } from './UserHashedPassword';
+import { UserPasswordNotValid } from './UserPasswordNotValid';
 
 export class UserPassword extends StringValueObject {
 	static async hashUserPassword(
@@ -10,7 +10,7 @@ export class UserPassword extends StringValueObject {
 		hashService: HashUserPasswordService
 	): Promise<UserHashedPassword> {
 		if (!this.validate(password)) {
-			throw new InvalidArgumentError(`<UserPassword> does not allow the value <${password}>`);
+      throw new UserPasswordNotValid(`The password: <${password}> is not valid`);
 		}
 
 		const hashedPassword = await hashService.hash(password);
