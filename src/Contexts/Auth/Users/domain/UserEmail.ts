@@ -3,7 +3,7 @@ import { StringValueObject } from '../../../Shared/domain/value-object/StringVal
 
 export class UserEmail extends StringValueObject {
 	constructor(value: string) {
-		super(value);
+		super(value.toLocaleLowerCase());
 		this.ensureIsValidEmail(value);
 	}
 

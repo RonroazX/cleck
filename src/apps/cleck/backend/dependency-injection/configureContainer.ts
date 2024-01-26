@@ -9,6 +9,9 @@ import { LoginPostController } from '../controllers/LoginPostController';
 import { SignupPostController } from '../controllers/SignupPostController';
 import StatusGetController from '../controllers/StatusGetController';
 import { HashUserPasswordService } from '../../../../Contexts/Auth/Users/application/HashUserPassword';
+import { UserValidator } from '../../../../Contexts/Auth/Users/application/UserValidator';
+import { PasswordValidator } from '../../../../Contexts/Auth/Users/application/PasswordValidator';
+import { JWTService } from '../../../../Contexts/Auth/Users/application/JwtService';
 
 const container = awilix.createContainer({
 	injectionMode: awilix.InjectionMode.PROXY,
@@ -29,6 +32,9 @@ container.register({
 	statusGetController: awilix.asClass(StatusGetController).singleton(),
 	environmentArranger: awilix.asClass(MongoEnvironmentArranger).singleton(),
   hashService: awilix.asClass(HashUserPasswordService).singleton(),
+  userValidator: awilix.asClass(UserValidator).singleton(),
+  passwordValidator: awilix.asClass(PasswordValidator).singleton(),
+  jwtService: awilix.asClass(JWTService).singleton(),
 });
 
 export default container;

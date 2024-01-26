@@ -25,6 +25,15 @@ export class User extends AggregateRoot {
 		this.password = password;
 	}
 
+  static fromPrimitives(plainData: {id: string, username: string, email: string, password: string}): User {
+    return new User({
+      id: new UserId(plainData.id),
+      email: new UserEmail(plainData.email),
+      password: new UserHashedPassword(plainData.password),
+      username: new UserName(plainData.username),
+    });
+  }
+
 	toPrimitives(): { id: string; username: string; email: string; password: string } {
 		return {
 			id: this.id.value,
