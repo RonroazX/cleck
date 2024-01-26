@@ -1,4 +1,5 @@
 import {UserCreator} from "../../../../../src/Contexts/Auth/Users/application/UserCreator";
+import { UserPasswordNotValid } from "../../../../../src/Contexts/Auth/Users/domain/UserPasswordNotValid";
 import { HashServiceMock } from "../__mocks__/HashServiceMock";
 import {UserRepositoryMock} from "../__mocks__/UserRepositoryMock";
 import { UserMother } from "../domain/UserMother";
@@ -24,17 +25,16 @@ describe('UserCreator', () => {
 
     repository.assertSaveHaveBeenCalledWith(user);
   });
-/*
-  it('should throw an error', () => {
-    expect(() => {
+
+  it('should throw an error', async () => {
+    await expect(async () => {
       const request = CreateUserRequestMother.invalidRequest();
 
-      const course = UserMother.fromRequest(request);
+      const user = UserMother.fromRequest(request);
 
-      creator.run(request);
+      await creator.run(request);
 
-      repository.assertSaveHaveBeenCalledWith(course);
-    }).toThrow(UserPasswordNotValid);
+      repository.assertSaveHaveBeenCalledWith(user);
+    }).rejects.toThrow(UserPasswordNotValid);
   });
-  */
 });

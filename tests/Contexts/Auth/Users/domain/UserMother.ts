@@ -24,7 +24,7 @@ export class UserMother {
     )
   }
 
-  static async fromRequest(request: UserCreatorRequest): Promise<User> {
+  static fromRequest(request: UserCreatorRequest): User {
     return this.create(
       UserIdMother.create(request.id || UserIdMother.random().value),
       UserNameMother.create(request.username),
