@@ -8,6 +8,7 @@ import * as http from 'http';
 import httpStatus from 'http-status';
 
 import { registerRoutes } from './routes';
+import { UnauthorizedError } from '../../../Contexts/Shared/domain/value-object/UnauthorizedError';
 
 export class Server {
 	private readonly express: express.Express;
@@ -31,7 +32,9 @@ export class Server {
 		registerRoutes(router);
 
 		router.use((err: Error, req: Request, res: Response, _next: () => void) => {
-			console.log(err);
+			if (err instanceof UnauthorizedError) {
+        return res.status(httpStatus.UNAUTHORIZED).send({ message: err.message});
+      }
 			res.status(httpStatus.INTERNAL_SERVER_ERROR).send();
 		});
 	}

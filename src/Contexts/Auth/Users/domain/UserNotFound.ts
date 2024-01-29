@@ -1,3 +1,3 @@
-import { InvalidArgumentError } from '../../../Shared/domain/value-object/InvalidArgumentError';
+import { UnauthorizedError } from '../../../Shared/domain/value-object/UnauthorizedError';
 
-export class UserNotFound extends InvalidArgumentError {}
+export class UserNotFound extends UnauthorizedError {}

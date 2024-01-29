@@ -6,6 +6,7 @@ import { SignupPostController } from '../controllers/SignupPostController';
 import container from '../dependency-injection/configureContainer';
 import { validateSchema } from '.';
 
+
 export const register = (router: Router): void => {
 	const loginReqSchema = [
 		body('email').isEmail().withMessage('email must be a email'),

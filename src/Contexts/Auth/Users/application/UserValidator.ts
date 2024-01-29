@@ -29,6 +29,8 @@ export class UserValidator {
 			throw new UserNotFound(`User: <${email} not found>`);
 		}
 
+    console.log(user);
+
 		const isPasswordValid = await this.passwordValidator.validate(password, user.password);
 
 		if (!isPasswordValid) {
