@@ -2,8 +2,8 @@ import { Request, Response } from 'express';
 import httpStatus from 'http-status';
 
 import { UserCreator } from '../../../../Contexts/Auth/Users/application/UserCreator';
-import { Controller } from './Controller';
 import { UserCreatorRequest } from '../../../../Contexts/Auth/Users/application/UserCreatorRequest';
+import { Controller } from './Controller';
 
 type SignupPostRequest = Request & {
 	body: {
@@ -24,7 +24,7 @@ export class SignupPostController implements Controller {
 		try {
 			const { username, email, password }: UserCreatorRequest = req.body;
 
-			await this.userCreator.run({ username, email, password});
+			await this.userCreator.run({ username, email, password });
 
 			res.status(httpStatus.CREATED).send();
 		} catch (e) {

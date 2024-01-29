@@ -5,7 +5,7 @@ import { UserHashedPassword } from './UserHashedPassword';
 import { UserName } from './UserName';
 
 interface UserParams {
-  id: UserId;
+	id: UserId;
 	username: UserName;
 	email: UserEmail;
 	password: UserHashedPassword;
@@ -25,14 +25,19 @@ export class User extends AggregateRoot {
 		this.password = password;
 	}
 
-  static fromPrimitives(plainData: {id: string, username: string, email: string, password: string}): User {
-    return new User({
-      id: new UserId(plainData.id),
-      email: new UserEmail(plainData.email),
-      password: new UserHashedPassword(plainData.password),
-      username: new UserName(plainData.username),
-    });
-  }
+	static fromPrimitives(plainData: {
+		id: string;
+		username: string;
+		email: string;
+		password: string;
+	}): User {
+		return new User({
+			id: new UserId(plainData.id),
+			email: new UserEmail(plainData.email),
+			password: new UserHashedPassword(plainData.password),
+			username: new UserName(plainData.username)
+		});
+	}
 
 	toPrimitives(): { id: string; username: string; email: string; password: string } {
 		return {

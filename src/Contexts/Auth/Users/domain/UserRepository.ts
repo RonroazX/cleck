@@ -5,5 +5,5 @@ import { UserEmail } from './UserEmail';
 export interface UserRepository {
 	save(user: User): Promise<void>;
 
-  searchUserByEmail(email: UserEmail): Promise<Nullable<User>>;
+	searchUserByEmail(email: UserEmail): Promise<Nullable<User>>;
 }

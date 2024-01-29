@@ -1,7 +1,7 @@
-import { MotherCreator } from "./MotherCreator";
+import { MotherCreator } from './MotherCreator';
 
 export class PasswordMother {
-  static random(length: number) {
-    return MotherCreator.password(length);
-  }
+	static random(length: number): string {
+		return MotherCreator.password(length);
+	}
 }

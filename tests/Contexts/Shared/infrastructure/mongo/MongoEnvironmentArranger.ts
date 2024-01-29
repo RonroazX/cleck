@@ -21,9 +21,9 @@ export class MongoEnvironmentArranger extends EnvironmentArranger {
 		const collections = await this.collections();
 		const client = await this.client();
 
-		for (const collection of collections) {
-			await client.db().collection(collection).deleteMany({});
-		}
+		await Promise.all(
+			collections.map(collection => client.db().collection(collection).deleteMany({}))
+		);
 	}
 
 	protected async client(): Promise<MongoClient> {

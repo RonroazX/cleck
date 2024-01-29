@@ -1,17 +1,18 @@
 import * as awilix from 'awilix';
+
 import { MongoEnvironmentArranger } from '../../../../../tests/Contexts/Shared/infrastructure/mongo/MongoEnvironmentArranger';
 import { MongoConfigFactory } from '../../../../Contexts/Auth/Shared/infrastructure/persistance/mongo/MongoConfigFactory';
+import { HashUserPasswordService } from '../../../../Contexts/Auth/Users/application/HashUserPassword';
+import { JWTService } from '../../../../Contexts/Auth/Users/application/JwtService';
+import { PasswordValidator } from '../../../../Contexts/Auth/Users/application/PasswordValidator';
 import { UserCreator } from '../../../../Contexts/Auth/Users/application/UserCreator';
+import { UserValidator } from '../../../../Contexts/Auth/Users/application/UserValidator';
 import { MongoUserRepository } from '../../../../Contexts/Auth/Users/infrastructure/MongoUserRepository';
 import { MongoClientFactory } from '../../../../Contexts/Shared/infrastructure/persistance/mongo/MongoClientFactory';
 import MongoConfig from '../../../../Contexts/Shared/infrastructure/persistance/mongo/MongoConfig';
 import { LoginPostController } from '../controllers/LoginPostController';
 import { SignupPostController } from '../controllers/SignupPostController';
 import StatusGetController from '../controllers/StatusGetController';
-import { HashUserPasswordService } from '../../../../Contexts/Auth/Users/application/HashUserPassword';
-import { UserValidator } from '../../../../Contexts/Auth/Users/application/UserValidator';
-import { PasswordValidator } from '../../../../Contexts/Auth/Users/application/PasswordValidator';
-import { JWTService } from '../../../../Contexts/Auth/Users/application/JwtService';
 
 const container = awilix.createContainer({
 	injectionMode: awilix.InjectionMode.PROXY,
@@ -31,10 +32,10 @@ container.register({
 	signupPostController: awilix.asClass(SignupPostController).singleton(),
 	statusGetController: awilix.asClass(StatusGetController).singleton(),
 	environmentArranger: awilix.asClass(MongoEnvironmentArranger).singleton(),
-  hashService: awilix.asClass(HashUserPasswordService).singleton(),
-  userValidator: awilix.asClass(UserValidator).singleton(),
-  passwordValidator: awilix.asClass(PasswordValidator).singleton(),
-  jwtService: awilix.asClass(JWTService).singleton(),
+	hashService: awilix.asClass(HashUserPasswordService).singleton(),
+	userValidator: awilix.asClass(UserValidator).singleton(),
+	passwordValidator: awilix.asClass(PasswordValidator).singleton(),
+	jwtService: awilix.asClass(JWTService).singleton()
 });
 
 export default container;

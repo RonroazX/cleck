@@ -10,7 +10,7 @@ export class UserPassword extends StringValueObject {
 		hashService: HashUserPasswordService
 	): Promise<UserHashedPassword> {
 		if (!this.validate(password)) {
-      throw new UserPasswordNotValid(`The password: <${password}> is not valid`);
+			throw new UserPasswordNotValid(`The password: <${password}> is not valid`);
 		}
 
 		const hashedPassword = await hashService.hash(password);
