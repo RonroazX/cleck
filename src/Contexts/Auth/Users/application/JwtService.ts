@@ -8,11 +8,11 @@ export class JWTService {
 	}
 
 	verify(token: string): void {
-		jwt.verify(token, 'secret', (err, next) => {
+		jwt.verify(token, 'secret', (err, result) => {
 			if (err) {
 				throw new UnauthorizedError('Invalid token');
 			}
-			console.log(next);
+      return result;
 		});
 	}
 }

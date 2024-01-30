@@ -18,5 +18,7 @@ export function validateJWT(req: Request, res: Response, next: NextFunction): vo
 		throw new UnauthorizedError('No token provided');
 	}
 
-	jwtService.verify(jwtToken);
+	const result = jwtService.verify(jwtToken);
+
+  console.log(result);
 }

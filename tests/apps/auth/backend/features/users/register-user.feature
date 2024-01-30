@@ -21,7 +21,18 @@ Feature: Register a new user
     {
       "username": "tangoler",
       "email": "perole@gmail.com",
-      "password": "VicentTango"
+      "password": "VicentTango24"
     }
     """
     Then the response status code should be 422
+
+  Scenario: Register user already registered
+    Given I send a POST request to "/signup" with body:
+    """
+    {
+      "username": "tangoler",
+      "email": "perole@gmail.com",
+      "password": "VicentTango24$"
+    }
+    """
+    Then the response status code should be 409
