@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import httpStatus from 'http-status';
 
 import { UserValidator } from '../../../../Contexts/Auth/Users/application/UserValidator';
@@ -17,7 +17,7 @@ export class LoginPostController implements Controller {
 		this.userValidator = opts.userValidator;
 	}
 
-	async run(req: LoginPostRequest, res: Response): Promise<void> {
+	async run(req: LoginPostRequest, res: Response, next: NextFunction): Promise<void> {
 		try {
 			const { email, password } = req.body;
 
@@ -27,7 +27,7 @@ export class LoginPostController implements Controller {
 				access_token: accessToken
 			});
 		} catch (e) {
-			res.status(httpStatus.UNAUTHORIZED).send();
+      next(e);
 		}
 	}
 }

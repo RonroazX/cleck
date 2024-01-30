@@ -1,4 +1,4 @@
-import { Request, Response, Router } from 'express';
+import { NextFunction, Request, Response, Router } from 'express';
 import { body } from 'express-validator';
 
 import { LoginPostController } from '../controllers/LoginPostController';
@@ -26,12 +26,12 @@ export const register = (router: Router): void => {
 	];
 
 	const loginPostController = container.resolve<LoginPostController>('loginPostController');
-	router.post('/login', loginReqSchema, validateSchema, (req: Request, res: Response) => {
-		loginPostController.run(req, res);
+	router.post('/login', loginReqSchema, validateSchema, (req: Request, res: Response, next: NextFunction) => {
+		loginPostController.run(req, res, next);
 	});
 
 	const signupPostController = container.resolve<SignupPostController>('signupPostController');
-	router.post('/signup', signupReqSchema, validateSchema, (req: Request, res: Response) => {
-		signupPostController.run(req, res);
+	router.post('/signup', signupReqSchema, validateSchema, (req: Request, res: Response, next: NextFunction) => {
+		signupPostController.run(req, res, next);
 	});
 };

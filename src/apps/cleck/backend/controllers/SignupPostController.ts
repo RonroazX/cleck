@@ -1,6 +1,5 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import httpStatus from 'http-status';
-
 import { UserCreator } from '../../../../Contexts/Auth/Users/application/UserCreator';
 import { UserCreatorRequest } from '../../../../Contexts/Auth/Users/application/UserCreatorRequest';
 import { Controller } from './Controller';
@@ -20,7 +19,7 @@ export class SignupPostController implements Controller {
 		this.userCreator = opts.userCreator;
 	}
 
-	async run(req: SignupPostRequest, res: Response): Promise<void> {
+	async run(req: SignupPostRequest, res: Response, next: NextFunction): Promise<void> {
 		try {
 			const { username, email, password }: UserCreatorRequest = req.body;
 
@@ -28,8 +27,8 @@ export class SignupPostController implements Controller {
 
 			res.status(httpStatus.CREATED).send();
 		} catch (e) {
-			console.log(e);
-			res.status(httpStatus.INTERNAL_SERVER_ERROR).send();
+      console.log(e);
+      next(e);
 		}
 	}
 }

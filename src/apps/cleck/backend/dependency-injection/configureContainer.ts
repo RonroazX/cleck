@@ -13,6 +13,7 @@ import MongoConfig from '../../../../Contexts/Shared/infrastructure/persistance/
 import { LoginPostController } from '../controllers/LoginPostController';
 import { SignupPostController } from '../controllers/SignupPostController';
 import StatusGetController from '../controllers/StatusGetController';
+import { UserEmailExistanceChecker } from '../../../../Contexts/Auth/Users/application/UserEmailExistanceChecker';
 
 const container = awilix.createContainer({
 	injectionMode: awilix.InjectionMode.PROXY,
@@ -35,7 +36,8 @@ container.register({
 	hashService: awilix.asClass(HashUserPasswordService).singleton(),
 	userValidator: awilix.asClass(UserValidator).singleton(),
 	passwordValidator: awilix.asClass(PasswordValidator).singleton(),
-	jwtService: awilix.asClass(JWTService).singleton()
+	jwtService: awilix.asClass(JWTService).singleton(),
+  userEmailExistanceChecker: awilix.asClass(UserEmailExistanceChecker).singleton(),
 });
 
 export default container;
