@@ -10,7 +10,7 @@ export class MotherCreator {
 	}
 
 	static password(length: number): string {
-		return faker.internet.password({ length, prefix: '$', pattern: /[A-Za-z0-9]/ });
+		return faker.internet.password({ length, prefix: '$2', pattern: /[A-Za-z0-9]/ });
 	}
 
 	static email(): string {
