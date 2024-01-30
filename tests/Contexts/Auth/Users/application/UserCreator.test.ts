@@ -15,7 +15,7 @@ let userEmailExistanceChecker: UserEmailExistanceCheckerMock;
 beforeEach(() => {
 	repository = new UserRepositoryMock();
 	hashService = new HashServiceMock();
-  userEmailExistanceChecker = new UserEmailExistanceCheckerMock({ userRepository: repository});
+	userEmailExistanceChecker = new UserEmailExistanceCheckerMock({ userRepository: repository });
 	creator = new UserCreator({ userRepository: repository, hashService, userEmailExistanceChecker });
 });
 
@@ -42,9 +42,9 @@ describe('UserCreator', () => {
 		}).rejects.toThrow(UserPasswordNotValid);
 	});
 
-  it('should throw an error UserEmail already registered', async () => {
+	it('should throw an error UserEmail already registered', async () => {
 		await expect(async () => {
-      userEmailExistanceChecker.mockEmailAlreadyRegistered();
+			userEmailExistanceChecker.mockEmailAlreadyRegistered();
 
 			const request = await CreateUserRequestMother.random();
 

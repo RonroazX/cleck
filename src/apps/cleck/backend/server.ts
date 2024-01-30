@@ -6,9 +6,10 @@ import Router from 'express-promise-router';
 import helmet from 'helmet';
 import * as http from 'http';
 import httpStatus from 'http-status';
-import { registerRoutes } from './routes';
-import { UnauthorizedError } from '../../../Contexts/Shared/domain/value-object/UnauthorizedError';
+
 import { ConflictError } from '../../../Contexts/Shared/domain/value-object/ConflictError';
+import { UnauthorizedError } from '../../../Contexts/Shared/domain/value-object/UnauthorizedError';
+import { registerRoutes } from './routes';
 
 export class Server {
 	private readonly express: express.Express;
@@ -33,11 +34,11 @@ export class Server {
 
 		router.use((err: Error, req: Request, res: Response, _next: () => void) => {
 			if (err instanceof UnauthorizedError) {
-        return res.status(httpStatus.UNAUTHORIZED).send({ message: err.message });
-      }
-      if (err instanceof ConflictError) {
-        return res.status(httpStatus.CONFLICT).send({ message: err.message });
-      }
+				return res.status(httpStatus.UNAUTHORIZED).send({ message: err.message });
+			}
+			if (err instanceof ConflictError) {
+				return res.status(httpStatus.CONFLICT).send({ message: err.message });
+			}
 			res.status(httpStatus.INTERNAL_SERVER_ERROR).send();
 		});
 	}

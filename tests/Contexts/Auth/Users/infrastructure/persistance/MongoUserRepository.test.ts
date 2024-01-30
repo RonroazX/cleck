@@ -4,15 +4,15 @@ import { EnvironmentArranger } from '../../../../Shared/infrastructure/arranger/
 import { UserMother } from '../../domain/UserMother';
 
 const repository: UserRepository = container.resolve<UserRepository>('userRepository');
-const environmentArranger: Promise<EnvironmentArranger> =
-	container.resolve<Promise<EnvironmentArranger>>('environmentArranger');
+const environmentArranger: EnvironmentArranger =
+	container.resolve<EnvironmentArranger>('environmentArranger');
 
 beforeEach(async () => {
-	await (await environmentArranger).arrange();
+	await environmentArranger.arrange();
 });
 
 afterAll(async () => {
-	await (await environmentArranger).close();
+	await environmentArranger.close();
 });
 
 describe('MongoUserRepository', () => {

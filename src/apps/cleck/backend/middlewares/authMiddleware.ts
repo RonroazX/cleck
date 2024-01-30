@@ -1,23 +1,22 @@
-import { Request, Response, NextFunction } from "express";
-import { UnauthorizedError } from "../../../../Contexts/Shared/domain/value-object/UnauthorizedError";
-import container from "../dependency-injection/configureContainer";
-import { JWTService } from "../../../../Contexts/Auth/Users/application/JwtService";
+import { NextFunction, Request, Response } from 'express';
 
-export function validateJWT(req: Request, res: Response, next: NextFunction) {
-  const jwtService = container.resolve<JWTService>('jwtService');
-  const authHeaders = req.headers.authorization;
+import { JWTService } from '../../../../Contexts/Auth/Users/application/JwtService';
+import { UnauthorizedError } from '../../../../Contexts/Shared/domain/value-object/UnauthorizedError';
+import container from '../dependency-injection/configureContainer';
 
-  if (!authHeaders) {
-    throw new UnauthorizedError('No token provided');
-  }
+export function validateJWT(req: Request, res: Response, next: NextFunction): void {
+	const jwtService = container.resolve<JWTService>('jwtService');
+	const authHeaders = req.headers.authorization;
 
-  const jwtToken = authHeaders.split(' ')[1];
+	if (!authHeaders) {
+		throw new UnauthorizedError('No token provided');
+	}
 
-  if (!jwtToken) {
-    throw new UnauthorizedError('No token provided');
-  }
+	const jwtToken = authHeaders.split(' ')[1];
 
-  jwtService.verify(jwtToken);
+	if (!jwtToken) {
+		throw new UnauthorizedError('No token provided');
+	}
 
-
+	jwtService.verify(jwtToken);
 }

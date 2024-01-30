@@ -6,7 +6,6 @@ import { SignupPostController } from '../controllers/SignupPostController';
 import container from '../dependency-injection/configureContainer';
 import { validateSchema } from '.';
 
-
 export const register = (router: Router): void => {
 	const loginReqSchema = [
 		body('email').isEmail().withMessage('email must be a email'),
@@ -26,12 +25,22 @@ export const register = (router: Router): void => {
 	];
 
 	const loginPostController = container.resolve<LoginPostController>('loginPostController');
-	router.post('/login', loginReqSchema, validateSchema, (req: Request, res: Response, next: NextFunction) => {
-		loginPostController.run(req, res, next);
-	});
+	router.post(
+		'/login',
+		loginReqSchema,
+		validateSchema,
+		(req: Request, res: Response, next: NextFunction) => {
+			loginPostController.run(req, res, next);
+		}
+	);
 
 	const signupPostController = container.resolve<SignupPostController>('signupPostController');
-	router.post('/signup', signupReqSchema, validateSchema, (req: Request, res: Response, next: NextFunction) => {
-		signupPostController.run(req, res, next);
-	});
+	router.post(
+		'/signup',
+		signupReqSchema,
+		validateSchema,
+		(req: Request, res: Response, next: NextFunction) => {
+			signupPostController.run(req, res, next);
+		}
+	);
 };

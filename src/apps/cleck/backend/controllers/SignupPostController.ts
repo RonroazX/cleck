@@ -1,5 +1,6 @@
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import httpStatus from 'http-status';
+
 import { UserCreator } from '../../../../Contexts/Auth/Users/application/UserCreator';
 import { UserCreatorRequest } from '../../../../Contexts/Auth/Users/application/UserCreatorRequest';
 import { Controller } from './Controller';
@@ -27,8 +28,8 @@ export class SignupPostController implements Controller {
 
 			res.status(httpStatus.CREATED).send();
 		} catch (e) {
-      console.log(e);
-      next(e);
+			console.log(e);
+			next(e);
 		}
 	}
 }

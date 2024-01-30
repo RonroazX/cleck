@@ -6,6 +6,7 @@ import { HashUserPasswordService } from '../../../../Contexts/Auth/Users/applica
 import { JWTService } from '../../../../Contexts/Auth/Users/application/JwtService';
 import { PasswordValidator } from '../../../../Contexts/Auth/Users/application/PasswordValidator';
 import { UserCreator } from '../../../../Contexts/Auth/Users/application/UserCreator';
+import { UserEmailExistanceChecker } from '../../../../Contexts/Auth/Users/application/UserEmailExistanceChecker';
 import { UserValidator } from '../../../../Contexts/Auth/Users/application/UserValidator';
 import { MongoUserRepository } from '../../../../Contexts/Auth/Users/infrastructure/MongoUserRepository';
 import { MongoClientFactory } from '../../../../Contexts/Shared/infrastructure/persistance/mongo/MongoClientFactory';
@@ -13,7 +14,6 @@ import MongoConfig from '../../../../Contexts/Shared/infrastructure/persistance/
 import { LoginPostController } from '../controllers/LoginPostController';
 import { SignupPostController } from '../controllers/SignupPostController';
 import StatusGetController from '../controllers/StatusGetController';
-import { UserEmailExistanceChecker } from '../../../../Contexts/Auth/Users/application/UserEmailExistanceChecker';
 
 const container = awilix.createContainer({
 	injectionMode: awilix.InjectionMode.PROXY,
@@ -37,7 +37,7 @@ container.register({
 	userValidator: awilix.asClass(UserValidator).singleton(),
 	passwordValidator: awilix.asClass(PasswordValidator).singleton(),
 	jwtService: awilix.asClass(JWTService).singleton(),
-  userEmailExistanceChecker: awilix.asClass(UserEmailExistanceChecker).singleton(),
+	userEmailExistanceChecker: awilix.asClass(UserEmailExistanceChecker).singleton()
 });
 
 export default container;

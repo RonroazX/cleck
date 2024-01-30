@@ -27,7 +27,7 @@ export class LoginPostController implements Controller {
 				access_token: accessToken
 			});
 		} catch (e) {
-      next(e);
+			next(e);
 		}
 	}
 }

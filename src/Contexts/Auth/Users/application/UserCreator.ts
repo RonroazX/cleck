@@ -13,17 +13,21 @@ import { UserEmailExistanceChecker } from './UserEmailExistanceChecker';
 export class UserCreator {
 	private readonly userRepository: UserRepository;
 	private readonly hashService: HashUserPasswordService;
-  private readonly userEmailExistanceChecker: UserEmailExistanceChecker;
-	constructor(opts: { userRepository: UserRepository; hashService: HashUserPasswordService; userEmailExistanceChecker: UserEmailExistanceChecker }) {
+	private readonly userEmailExistanceChecker: UserEmailExistanceChecker;
+	constructor(opts: {
+		userRepository: UserRepository;
+		hashService: HashUserPasswordService;
+		userEmailExistanceChecker: UserEmailExistanceChecker;
+	}) {
 		this.userRepository = opts.userRepository;
 		this.hashService = opts.hashService;
-    this.userEmailExistanceChecker = opts.userEmailExistanceChecker;
+		this.userEmailExistanceChecker = opts.userEmailExistanceChecker;
 	}
 
 	async run(request: UserCreatorRequest): Promise<void> {
 		const { id, email, password, username } = request;
-    const userEmail = new UserEmail(email);
-    await this.userEmailExistanceChecker.run(userEmail);
+		const userEmail = new UserEmail(email);
+		await this.userEmailExistanceChecker.run(userEmail);
 		const hashedPassword = await UserPassword.hashUserPassword(password, this.hashService);
 		const user = new User({
 			id: new UserId(id ?? uuidv4()),
