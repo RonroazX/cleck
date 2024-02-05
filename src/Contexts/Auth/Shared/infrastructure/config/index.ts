@@ -12,7 +12,7 @@ const moocConfig = convict({
 			doc: 'The Mongo connection URL',
 			format: String,
 			env: 'MONGO_URL',
-			default: 'mongodb://localhost:28017/accessmanage-backend-dev'
+			default: 'mongodb://localhost:28017/auth-backend-dev'
 		}
 	}
 });

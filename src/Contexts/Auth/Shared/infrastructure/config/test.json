@@ -1,5 +1,5 @@
 {
   "mongo": {
-    "url": "mongodb://localhost:28017/accessmanage-backend-dev-test"
+    "url": "mongodb://localhost:28017/auth-backend-dev-test"
   }
 }

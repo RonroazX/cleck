@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from 'express';
-
 import { UserValidator } from '../../../../Contexts/Auth/Users/application/UserValidator';
 import { Controller } from './Controller';
 

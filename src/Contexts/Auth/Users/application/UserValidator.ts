@@ -1,7 +1,7 @@
 import { UserEmail } from '../domain/UserEmail';
 import { UserNotFound } from '../domain/UserNotFound';
 import { UserRepository } from '../domain/UserRepository';
-import { JWTService } from './JwtService';
+import { JWTService, JwtTokens } from './JwtService';
 import { PasswordValidator } from './PasswordValidator';
 import { UserValidateRequest } from './UserValidateRequest';
 
@@ -20,7 +20,7 @@ export class UserValidator {
 		this.jwtService = opts.jwtService;
 	}
 
-	async run(request: UserValidateRequest): Promise<string> {
+	async run(request: UserValidateRequest): Promise<JwtTokens> {
 		const { email, password } = request;
 
 		const user = await this.userRepository.searchUserByEmail(new UserEmail(email));

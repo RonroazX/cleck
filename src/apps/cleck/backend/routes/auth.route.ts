@@ -43,4 +43,13 @@ export const register = (router: Router): void => {
 			signupPostController.run(req, res, next);
 		}
 	);
+
+  router.post(
+		'/refresh',
+		signupReqSchema,
+		validateSchema,
+		(req: Request, res: Response, next: NextFunction) => {
+			signupPostController.run(req, res, next);
+		}
+	);
 };
