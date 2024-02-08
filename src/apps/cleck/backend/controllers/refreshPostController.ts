@@ -1,32 +1,25 @@
-import { NextFunction, Request, Response } from 'express';
-import { UserValidator } from '../../../../Contexts/Auth/Users/application/UserValidator';
+import { NextFunction, Response, Request } from 'express';
 import { Controller } from './Controller';
+import { JWTService } from '../../../../Contexts/Auth/Users/application/JwtService';
 
-type LoginPostRequest = Request & {
-	body: {
-		email: string;
-		password: string;
-	};
-};
 
-export class LoginPostController implements Controller {
-	private readonly userValidator: UserValidator;
-	constructor(opts: { userValidator: UserValidator }) {
-		this.userValidator = opts.userValidator;
+export class RefreshPostController implements Controller {
+	private readonly jwtService: JWTService;
+	constructor(opts: { jwtService: JWTService }) {
+		this.jwtService = opts.jwtService;
 	}
 
-	async run(req: LoginPostRequest, res: Response, next: NextFunction): Promise<void> {
+	async run(req: Request, res: Response, next: NextFunction): Promise<void> {
 		try {
-			const { email, password } = req.body;
 
-			const jwtTokens = await this.userValidator.run({ email, password });
+      const decoded = req.body.user;
+      const payload = { id: decoded.id, username: decoded.username };
 
-			const { accessToken, refreshToken } = jwtTokens;
+      const accessToken = this.jwtService.signAccessToken(payload);
 
 			res
-				.cookie('refreshToken', refreshToken, { httpOnly: true, sameSite: 'strict' })
 				.header('Authorization', accessToken)
-				.send({ email });
+				.send(decoded);
 		} catch (e) {
 			next(e);
 		}

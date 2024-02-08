@@ -1,10 +1,11 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { body } from 'express-validator';
-
 import { LoginPostController } from '../controllers/LoginPostController';
 import { SignupPostController } from '../controllers/SignupPostController';
 import container from '../dependency-injection/configureContainer';
 import { validateSchema } from '.';
+import { RefreshPostController } from '../controllers/RefreshPostController';
+import { validateRefreshToken } from '../middlewares/authMiddleware';
 
 export const register = (router: Router): void => {
 	const loginReqSchema = [
@@ -44,12 +45,13 @@ export const register = (router: Router): void => {
 		}
 	);
 
+  const refreshPostController = container.resolve<RefreshPostController>('refreshPostController');
   router.post(
 		'/refresh',
-		signupReqSchema,
 		validateSchema,
+    validateRefreshToken,
 		(req: Request, res: Response, next: NextFunction) => {
-			signupPostController.run(req, res, next);
+			refreshPostController.run(req, res, next);
 		}
 	);
 };

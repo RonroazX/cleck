@@ -2,17 +2,17 @@ import jwt from 'jsonwebtoken';
 
 import { UnauthorizedError } from '../../../Shared/domain/value-object/UnauthorizedError';
 
-export interface JwtTokens {
-	accessToken: string;
-	refreshToken: string;
-}
-
 export class JWTService {
-	sign(payload: object): JwtTokens {
-		const accessToken = jwt.sign(payload, 'secret', { expiresIn: '1h' });
+	signAccessToken(payload: object): string {
+		const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
+
+		return accessToken;
+	}
+
+  signRefreshToken(payload: object): string {
 		const refreshToken = jwt.sign(payload, 'secret', { expiresIn: '1d' });
 
-		return { accessToken, refreshToken };
+		return refreshToken;
 	}
 
 	async verify(token: string): Promise<any> {
