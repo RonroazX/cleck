@@ -1,8 +1,9 @@
-import { CleckBackendApp } from './CleckBackendApp';
 import dotenv from 'dotenv';
 
+import { CleckBackendApp } from './CleckBackendApp';
+
 try {
-  dotenv.config();
+	dotenv.config();
 	new CleckBackendApp().start();
 } catch (e) {
 	console.log(e);

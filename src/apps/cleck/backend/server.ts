@@ -7,8 +7,8 @@ import helmet from 'helmet';
 import * as http from 'http';
 import httpStatus from 'http-status';
 
-import { ConflictError } from '../../../Contexts/Shared/domain/value-object/ConflictError';
-import { UnauthorizedError } from '../../../Contexts/Shared/domain/value-object/UnauthorizedError';
+import { ConflictError } from '../../../Contexts/Shared/infrastructure/Errors/ConflictError';
+import { UnauthorizedError } from '../../../Contexts/Shared/infrastructure/Errors/UnauthorizedError';
 import { registerRoutes } from './routes';
 
 export class Server {

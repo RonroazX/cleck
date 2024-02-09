@@ -12,9 +12,9 @@ import { MongoUserRepository } from '../../../../Contexts/Auth/Users/infrastruct
 import { MongoClientFactory } from '../../../../Contexts/Shared/infrastructure/persistance/mongo/MongoClientFactory';
 import MongoConfig from '../../../../Contexts/Shared/infrastructure/persistance/mongo/MongoConfig';
 import { LoginPostController } from '../controllers/LoginPostController';
+import { RefreshPostController } from '../controllers/RefreshPostController';
 import { SignupPostController } from '../controllers/SignupPostController';
 import StatusGetController from '../controllers/StatusGetController';
-import { RefreshPostController } from '../controllers/RefreshPostController';
 
 const container = awilix.createContainer({
 	injectionMode: awilix.InjectionMode.PROXY,
@@ -33,7 +33,7 @@ container.register({
 	loginPostController: awilix.asClass(LoginPostController).singleton(),
 	signupPostController: awilix.asClass(SignupPostController).singleton(),
 	statusGetController: awilix.asClass(StatusGetController).singleton(),
-  refreshPostController: awilix.asClass(RefreshPostController).singleton(),
+	refreshPostController: awilix.asClass(RefreshPostController).singleton(),
 	environmentArranger: awilix.asClass(MongoEnvironmentArranger).singleton(),
 	hashService: awilix.asClass(HashUserPasswordService).singleton(),
 	userValidator: awilix.asClass(UserValidator).singleton(),

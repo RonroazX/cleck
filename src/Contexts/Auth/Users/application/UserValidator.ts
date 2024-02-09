@@ -1,3 +1,5 @@
+import { Nullable } from '../../../Shared/domain/Nullable';
+import { User } from '../domain/User';
 import { UserEmail } from '../domain/UserEmail';
 import { UserNotFound } from '../domain/UserNotFound';
 import { UserRepository } from '../domain/UserRepository';
@@ -20,7 +22,7 @@ export class UserValidator {
 		this.jwtService = opts.jwtService;
 	}
 
-	async run(request: UserValidateRequest): Promise<{accessToken: string; refreshToken: string}> {
+	async run(request: UserValidateRequest): Promise<{ accessToken: string; refreshToken: string }> {
 		const { email, password } = request;
 
 		const user = await this.userRepository.searchUserByEmail(new UserEmail(email));
@@ -35,10 +37,14 @@ export class UserValidator {
 			throw new UserNotFound(`User: <${user.email.value} not found>`);
 		}
 
-		const payload = { id: user.id.value, username: user.username.value };
+		const payload = { id: user.id.value, username: user.username.value, email: user.email.value };
 		const accessToken = this.jwtService.signAccessToken(payload);
-    const refreshToken = this.jwtService.signRefreshToken(payload);
+		const refreshToken = this.jwtService.signRefreshToken(payload);
 
-		return {accessToken, refreshToken};
+		return { accessToken, refreshToken };
 	}
+
+  async getUserByEmail(email: string): Promise<Nullable<User>> {
+    return this.userRepository.searchUserByEmail(new UserEmail(email));
+  }
 }

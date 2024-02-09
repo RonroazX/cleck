@@ -1,3 +1,3 @@
-import { UnauthorizedError } from '../../../Shared/domain/value-object/UnauthorizedError';
+import { UnauthorizedError } from '../../../Shared/infrastructure/Errors/UnauthorizedError';
 
 export class UserNotFound extends UnauthorizedError {}

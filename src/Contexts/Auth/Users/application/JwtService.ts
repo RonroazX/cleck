@@ -1,28 +1,51 @@
 import jwt from 'jsonwebtoken';
+import { UnauthorizedError } from '../../../Shared/infrastructure/Errors/UnauthorizedError';
+import container from '../../../../apps/cleck/backend/dependency-injection/configureContainer';
+import { UserValidator } from './UserValidator';
+import { ForbiddenError } from '../../../Shared/infrastructure/Errors/ForbiddenError';
 
-import { UnauthorizedError } from '../../../Shared/domain/value-object/UnauthorizedError';
 
 export class JWTService {
+	private readonly accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
+	private readonly refreshTokenSecret = process.env.ACCESS_TOKEN_SECRET;
+
 	signAccessToken(payload: object): string {
-		const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
+		if (!this.accessTokenSecret) {
+			throw new Error('no accessTokenSecret provided');
+		}
+		const accessToken = jwt.sign(payload, this.accessTokenSecret, { expiresIn: '1h' });
 
 		return accessToken;
 	}
 
-  signRefreshToken(payload: object): string {
-		const refreshToken = jwt.sign(payload, 'secret', { expiresIn: '1d' });
+	signRefreshToken(payload: object): string {
+		if (!this.refreshTokenSecret) {
+			throw new Error('no refreshTokenSecret provided');
+		}
+		const refreshToken = jwt.sign(payload, this.refreshTokenSecret, { expiresIn: '1d' });
 
 		return refreshToken;
 	}
 
-	async verify(token: string): Promise<any> {
-		return new Promise((resolve, reject) => {
-			jwt.verify(token, 'secret', (err, result) => {
-				if (err) {
-					reject(new UnauthorizedError('Invalid token'));
-				}
-				resolve(result);
-			});
-		});
+	async verify(refreshToken: string): Promise<any> {
+    if (!this.refreshTokenSecret) {
+      throw new Error('no refreshTokenSecret provided');
+    }
+    const userValidator = container.resolve<UserValidator>('userValidator');
+		jwt.verify(
+      refreshToken,
+      this.refreshTokenSecret,
+      async (err, decoded: any) => {
+        if (err) throw new ForbiddenError('Forbidden')
+
+        const user = await userValidator.getUserByEmail(decoded.email);
+
+        if (!user) {
+          throw new UnauthorizedError('Unauthorized');
+        }
+
+        return decoded;
+      }
+    )
 	}
 }
