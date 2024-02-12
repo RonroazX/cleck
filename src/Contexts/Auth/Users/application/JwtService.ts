@@ -1,8 +1,14 @@
 import jwt from 'jsonwebtoken';
-import { UnauthorizedError } from '../../../Shared/infrastructure/Errors/UnauthorizedError';
 import container from '../../../../apps/cleck/backend/dependency-injection/configureContainer';
-import { UserValidator } from './UserValidator';
 import { ForbiddenError } from '../../../Shared/infrastructure/Errors/ForbiddenError';
+import { UnauthorizedError } from '../../../Shared/infrastructure/Errors/UnauthorizedError';
+import { UserValidator } from './UserValidator';
+
+export interface jwtUserPayload {
+	id: string;
+	email: string;
+	username: string;
+}
 
 
 export class JWTService {
@@ -13,7 +19,7 @@ export class JWTService {
 		if (!this.accessTokenSecret) {
 			throw new Error('no accessTokenSecret provided');
 		}
-		const accessToken = jwt.sign(payload, this.accessTokenSecret, { expiresIn: '1h' });
+		const accessToken = jwt.sign(payload, this.accessTokenSecret, { expiresIn: '20s' });
 
 		return accessToken;
 	}
@@ -28,24 +34,24 @@ export class JWTService {
 	}
 
 	async verify(refreshToken: string): Promise<any> {
-    if (!this.refreshTokenSecret) {
-      throw new Error('no refreshTokenSecret provided');
-    }
-    const userValidator = container.resolve<UserValidator>('userValidator');
-		jwt.verify(
-      refreshToken,
-      this.refreshTokenSecret,
-      async (err, decoded: any) => {
-        if (err) throw new ForbiddenError('Forbidden')
+		if (!this.refreshTokenSecret) {
+			throw new Error('no refreshTokenSecret provided');
+		}
+		const userValidator = container.resolve<UserValidator>('userValidator');
 
-        const user = await userValidator.getUserByEmail(decoded.email);
+		jwt.verify(refreshToken, this.refreshTokenSecret, async (err, decoded: any) => {
+			if (err) {
+				throw new ForbiddenError('Forbidden');
+			}
+      console.log('El decoded es',decoded);
 
-        if (!user) {
-          throw new UnauthorizedError('Unauthorized');
-        }
+			const user = await userValidator.getUserByEmail(decoded.email) as {};
 
-        return decoded;
-      }
-    )
+			if (!user) {
+				throw new UnauthorizedError('Unauthorized');
+			}
+
+			return decoded;
+		});
 	}
 }

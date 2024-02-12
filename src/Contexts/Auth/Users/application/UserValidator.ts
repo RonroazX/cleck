@@ -44,7 +44,7 @@ export class UserValidator {
 		return { accessToken, refreshToken };
 	}
 
-  async getUserByEmail(email: string): Promise<Nullable<User>> {
-    return this.userRepository.searchUserByEmail(new UserEmail(email));
-  }
+	async getUserByEmail(email: string): Promise<Nullable<User>> {
+		return this.userRepository.searchUserByEmail(new UserEmail(email));
+	}
 }

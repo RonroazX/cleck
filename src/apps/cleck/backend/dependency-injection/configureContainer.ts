@@ -12,6 +12,7 @@ import { MongoUserRepository } from '../../../../Contexts/Auth/Users/infrastruct
 import { MongoClientFactory } from '../../../../Contexts/Shared/infrastructure/persistance/mongo/MongoClientFactory';
 import MongoConfig from '../../../../Contexts/Shared/infrastructure/persistance/mongo/MongoConfig';
 import { LoginPostController } from '../controllers/LoginPostController';
+import { LogoutPostController } from '../controllers/LogoutPostController';
 import { RefreshPostController } from '../controllers/RefreshPostController';
 import { SignupPostController } from '../controllers/SignupPostController';
 import StatusGetController from '../controllers/StatusGetController';
@@ -32,6 +33,7 @@ container.register({
 	userCreator: awilix.asClass(UserCreator).singleton(),
 	loginPostController: awilix.asClass(LoginPostController).singleton(),
 	signupPostController: awilix.asClass(SignupPostController).singleton(),
+	logoutPostController: awilix.asClass(LogoutPostController).singleton(),
 	statusGetController: awilix.asClass(StatusGetController).singleton(),
 	refreshPostController: awilix.asClass(RefreshPostController).singleton(),
 	environmentArranger: awilix.asClass(MongoEnvironmentArranger).singleton(),

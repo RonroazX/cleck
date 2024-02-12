@@ -28,7 +28,6 @@ export class SignupPostController implements Controller {
 
 			res.status(httpStatus.CREATED).send();
 		} catch (e) {
-			console.log(e);
 			next(e);
 		}
 	}

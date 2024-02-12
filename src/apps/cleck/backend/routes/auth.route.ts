@@ -1,6 +1,8 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { body } from 'express-validator';
+
 import { LoginPostController } from '../controllers/LoginPostController';
+import { LogoutPostController } from '../controllers/LogoutPostController';
 import { RefreshPostController } from '../controllers/RefreshPostController';
 import { SignupPostController } from '../controllers/SignupPostController';
 import container from '../dependency-injection/configureContainer';
@@ -45,11 +47,12 @@ export const register = (router: Router): void => {
 	);
 
 	const refreshPostController = container.resolve<RefreshPostController>('refreshPostController');
-	router.post(
-		'/refresh',
-		validateSchema,
-		(req: Request, res: Response, next: NextFunction) => {
-			refreshPostController.run(req, res, next);
-		}
-	);
+	router.post('/refresh', validateSchema, (req: Request, res: Response, next: NextFunction) => {
+		refreshPostController.run(req, res, next);
+	});
+
+	const logoutPostController = container.resolve<LogoutPostController>('logoutPostController');
+	router.post('/logout', validateSchema, (req: Request, res: Response, next: NextFunction) => {
+		logoutPostController.run(req, res, next);
+	});
 };

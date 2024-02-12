@@ -1,5 +1,6 @@
 import { json, urlencoded } from 'body-parser';
 import compress from 'compression';
+import cookieParser from 'cookie-parser';
 import errorHandler from 'errorhandler';
 import express, { Request, Response } from 'express';
 import Router from 'express-promise-router';
@@ -8,6 +9,7 @@ import * as http from 'http';
 import httpStatus from 'http-status';
 
 import { ConflictError } from '../../../Contexts/Shared/infrastructure/Errors/ConflictError';
+import { ForbiddenError } from '../../../Contexts/Shared/infrastructure/Errors/ForbiddenError';
 import { UnauthorizedError } from '../../../Contexts/Shared/infrastructure/Errors/UnauthorizedError';
 import { registerRoutes } from './routes';
 
@@ -20,6 +22,12 @@ export class Server {
 		this.port = port;
 		this.express = express();
 		this.express.use(json());
+		this.express.use(cookieParser());
+		/*
+    this.express.use(cors({
+      origin: ['http://127.0.0.1:5500', 'https://localhost:5000']
+    }))
+    */
 		this.express.use(urlencoded({ extended: true }));
 		this.express.use(helmet.xssFilter());
 		this.express.use(helmet.noSniff());
@@ -29,7 +37,6 @@ export class Server {
 		const router = Router();
 		router.use(errorHandler());
 		this.express.use(router);
-
 		registerRoutes(router);
 
 		router.use((err: Error, req: Request, res: Response, _next: () => void) => {
@@ -38,6 +45,9 @@ export class Server {
 			}
 			if (err instanceof ConflictError) {
 				return res.status(httpStatus.CONFLICT).send({ message: err.message });
+			}
+			if (err instanceof ForbiddenError) {
+				return res.status(httpStatus.FORBIDDEN).send({ message: err.message });
 			}
 			res.status(httpStatus.INTERNAL_SERVER_ERROR).send();
 		});

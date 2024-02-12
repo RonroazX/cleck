@@ -24,9 +24,14 @@ export class LoginPostController implements Controller {
 
 			const { accessToken, refreshToken } = jwtTokens;
 
-			res
-				.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, sameSite: 'none', maxAge: 24 * 60 * 60 * 1000 })
-				.send({ accessToken });
+			res.cookie('refreshToken', refreshToken, {
+				httpOnly: true,
+				secure: true,
+				sameSite: 'strict',
+				maxAge: 24 * 60 * 60 * 1000
+			});
+
+			res.json({ accessToken });
 		} catch (e) {
 			next(e);
 		}
