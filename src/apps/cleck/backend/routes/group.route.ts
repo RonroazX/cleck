@@ -6,9 +6,9 @@ import { UserRequest, validateJWT } from '../middlewares/authMiddleware';
 export const register = (router: Router): void => {
 	router.post(
 		'/group/create',
+		// eslint-disable-next-line @typescript-eslint/no-misused-promises
 		validateJWT,
 		(req: UserRequest, res: Response, next: NextFunction) => {
-			//console.log(req.body.user);
 			res.status(httpStatus.CREATED).send();
 		}
 	);

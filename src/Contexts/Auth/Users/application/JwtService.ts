@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+
 import container from '../../../../apps/cleck/backend/dependency-injection/configureContainer';
 import { ForbiddenError } from '../../../Shared/infrastructure/Errors/ForbiddenError';
 import { UnauthorizedError } from '../../../Shared/infrastructure/Errors/UnauthorizedError';
@@ -10,7 +11,6 @@ export interface jwtUserPayload {
 	username: string;
 }
 
-
 export class JWTService {
 	private readonly accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
 	private readonly refreshTokenSecret = process.env.ACCESS_TOKEN_SECRET;
@@ -19,7 +19,7 @@ export class JWTService {
 		if (!this.accessTokenSecret) {
 			throw new Error('no accessTokenSecret provided');
 		}
-		const accessToken = jwt.sign(payload, this.accessTokenSecret, { expiresIn: '20s' });
+		const accessToken = jwt.sign(payload, this.accessTokenSecret, { expiresIn: '30s' });
 
 		return accessToken;
 	}
@@ -33,25 +33,48 @@ export class JWTService {
 		return refreshToken;
 	}
 
-	async verify(refreshToken: string): Promise<any> {
-		if (!this.refreshTokenSecret) {
-			throw new Error('no refreshTokenSecret provided');
-		}
+	async verifyRefreshToken(refreshToken: string): Promise<any> {
 		const userValidator = container.resolve<UserValidator>('userValidator');
 
-		jwt.verify(refreshToken, this.refreshTokenSecret, async (err, decoded: any) => {
-			if (err) {
-				throw new ForbiddenError('Forbidden');
+		return new Promise((resolve, reject) => {
+			if (!this.refreshTokenSecret) {
+				reject(new Error('no refreshTokenSecret provided'));
+
+				return;
 			}
-      console.log('El decoded es',decoded);
+			// eslint-disable-next-line @typescript-eslint/no-misused-promises
+			jwt.verify(refreshToken, this.refreshTokenSecret, async (err, decoded: any) => {
+				if (err) {
+					reject(new ForbiddenError('Forbidden'));
+				}
 
-			const user = await userValidator.getUserByEmail(decoded.email) as {};
+				const decodedPayload = decoded as jwtUserPayload;
 
-			if (!user) {
-				throw new UnauthorizedError('Unauthorized');
+				const user = await userValidator.getUserByEmail(decodedPayload.email);
+				if (!user) {
+					reject(new UnauthorizedError('Unauthorized'));
+				}
+				resolve(decoded);
+			});
+		});
+	}
+
+	async verifyAccessToken(accessToken: string): Promise<any> {
+		return new Promise((resolve, reject) => {
+			if (!this.accessTokenSecret) {
+				reject(new Error('no refreshTokenSecret provided'));
+
+				return;
 			}
+			jwt.verify(accessToken, this.accessTokenSecret, (err, decoded: any) => {
+				if (err) {
+					reject(new ForbiddenError('Forbidden'));
 
-			return decoded;
+					return;
+				}
+
+				resolve(decoded);
+			});
 		});
 	}
 }

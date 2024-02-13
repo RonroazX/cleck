@@ -20,7 +20,7 @@ export class RefreshPostController implements Controller {
 				throw new UnauthorizedError('No refresh token provided');
 			}
 
-			const decoded: jwtUserPayload = await jwtService.verify(cookies.refreshToken);
+			const decoded: jwtUserPayload = await jwtService.verifyRefreshToken(cookies.refreshToken);
 
 			const payload = { id: decoded.id, username: decoded.username, email: decoded.email };
 
