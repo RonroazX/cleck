@@ -13,7 +13,7 @@ import { MongoClientFactory } from '../../../../Contexts/Shared/infrastructure/p
 import MongoConfig from '../../../../Contexts/Shared/infrastructure/persistance/mongo/MongoConfig';
 import { LoginPostController } from '../controllers/LoginPostController';
 import { LogoutPostController } from '../controllers/LogoutPostController';
-import { RefreshPostController } from '../controllers/RefreshPostController';
+import { RefreshPostController } from '../controllers/refreshPostController';
 import { SignupPostController } from '../controllers/SignupPostController';
 import StatusGetController from '../controllers/StatusGetController';
 
