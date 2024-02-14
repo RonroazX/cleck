@@ -36,12 +36,17 @@ export class JWTService {
 	async verifyRefreshToken(refreshToken: string): Promise<any> {
 		const userValidator = container.resolve<UserValidator>('userValidator');
 
+    const user = await userValidator.getUserByEmail(refreshToken);
+
 		return new Promise((resolve, reject) => {
 			if (!this.refreshTokenSecret) {
 				reject(new Error('no refreshTokenSecret provided'));
 
 				return;
 			}
+
+      if (!user) reject(new ForbiddenError('Forbidden'));
+
 			// eslint-disable-next-line @typescript-eslint/no-misused-promises
 			jwt.verify(refreshToken, this.refreshTokenSecret, async (err, decoded: any) => {
 				if (err) {

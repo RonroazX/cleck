@@ -6,4 +6,6 @@ export interface UserRepository {
 	save(user: User): Promise<void>;
 
 	searchUserByEmail(email: UserEmail): Promise<Nullable<User>>;
+
+  searchUserByToken(token: string): Promise<Nullable<User>>;
 }

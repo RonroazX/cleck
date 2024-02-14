@@ -16,6 +16,7 @@ export class User extends AggregateRoot {
 	readonly username: UserName;
 	readonly email: UserEmail;
 	readonly password: UserHashedPassword;
+  readonly refreshTokens: string[];
 
 	constructor({ id, username, email, password }: UserParams) {
 		super();
@@ -23,6 +24,7 @@ export class User extends AggregateRoot {
 		this.username = username;
 		this.email = email;
 		this.password = password;
+    this.refreshTokens = [];
 	}
 
 	static fromPrimitives(plainData: {
@@ -30,21 +32,23 @@ export class User extends AggregateRoot {
 		username: string;
 		email: string;
 		password: string;
+    refreshTokens: string[];
 	}): User {
 		return new User({
 			id: new UserId(plainData.id),
 			email: new UserEmail(plainData.email),
 			password: new UserHashedPassword(plainData.password),
-			username: new UserName(plainData.username)
+			username: new UserName(plainData.username),
 		});
 	}
 
-	toPrimitives(): { id: string; username: string; email: string; password: string } {
+	toPrimitives(): { id: string; username: string; email: string; password: string; refreshTokens: string[] } {
 		return {
 			id: this.id.value,
 			username: this.username.value,
 			email: this.email.value,
-			password: this.password.value
+			password: this.password.value,
+      refreshTokens: this.refreshTokens
 		};
 	}
 }
