@@ -9,6 +9,7 @@ interface UserParams {
 	username: UserName;
 	email: UserEmail;
 	password: UserHashedPassword;
+  refreshTokens: string[];
 }
 
 export class User extends AggregateRoot {
@@ -16,15 +17,15 @@ export class User extends AggregateRoot {
 	readonly username: UserName;
 	readonly email: UserEmail;
 	readonly password: UserHashedPassword;
-  readonly refreshTokens: string[];
+  private _refreshTokens: string[];
 
-	constructor({ id, username, email, password }: UserParams) {
+	constructor({ id, username, email, password, refreshTokens }: UserParams) {
 		super();
 		this.id = id;
 		this.username = username;
 		this.email = email;
 		this.password = password;
-    this.refreshTokens = [];
+    this._refreshTokens = refreshTokens;
 	}
 
 	static fromPrimitives(plainData: {
@@ -39,6 +40,7 @@ export class User extends AggregateRoot {
 			email: new UserEmail(plainData.email),
 			password: new UserHashedPassword(plainData.password),
 			username: new UserName(plainData.username),
+      refreshTokens: plainData.refreshTokens,
 		});
 	}
 
@@ -48,7 +50,23 @@ export class User extends AggregateRoot {
 			username: this.username.value,
 			email: this.email.value,
 			password: this.password.value,
-      refreshTokens: this.refreshTokens
+      refreshTokens: this._refreshTokens
 		};
 	}
+
+  public get refreshTokens() {
+    return this._refreshTokens;
+  }
+
+  revokeRefreshTokens(): void {
+    this._refreshTokens = [];
+  }
+
+  addRefreshToken(...token: string[]): void {
+    this._refreshTokens.push(...token);
+  }
+
+  removeRefreshToken(token: string): void {
+    this._refreshTokens = this.refreshTokens.filter(rt => rt !== token);
+  }
 }

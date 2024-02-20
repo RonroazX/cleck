@@ -1,67 +1,72 @@
 import jwt from 'jsonwebtoken';
 import { ForbiddenError } from '../../../Shared/infrastructure/Errors/ForbiddenError';
-import { UnauthorizedError } from '../../../Shared/infrastructure/Errors/UnauthorizedError';
 import { UserValidator } from './UserValidator';
+import { UserRepository } from '../domain/UserRepository';
 
 export interface jwtUserPayload {
-	id: string;
-	email: string;
-	username: string;
+  id: string;
+  email: string;
+  username: string;
 }
 
 export class JWTService {
   private readonly userValidatorService: UserValidator;
+  private readonly userRepository: UserRepository;
 
-  constructor(opts: {userValidator: UserValidator}) {
+  constructor(opts: { userValidator: UserValidator; userMongoRepository: UserRepository }) {
     this.userValidatorService = opts.userValidator;
+    this.userRepository = opts.userMongoRepository;
   }
 
-	signAccessToken(payload: object): string {
-		return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '30s' });
-	}
+  signAccessToken(payload: object): string {
+    return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '30s' });
+  }
 
-	signRefreshToken(payload: object): string {
-		return jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '1d' });
-	}
+  signRefreshToken(payload: object): string {
+    return jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '1d' });
+  }
 
-	async verifyRefreshToken(refreshToken: string): Promise<any> {
-    const user = await this.userValidatorService.getUserByToken(refreshToken);
+  async verifyRefreshToken(refreshToken: string): Promise<any> {
+    const foundUser = await this.userValidatorService.getUserByToken(refreshToken);
 
-    if (!user) {
+    if (!foundUser) {
       jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, async (err, decoded: any) => {
         if (err) throw new ForbiddenError('Forbidden');
         const hackedUser = await this.userValidatorService.getUserByEmail(decoded.email);
+        if (hackedUser) {
+          hackedUser.revokeRefreshTokens();
+          await this.userRepository.save(hackedUser);
+        }
       });
       throw new ForbiddenError('Forbidden');
     }
 
-			// eslint-disable-next-line @typescript-eslint/no-misused-promises
-			jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, async (err, decoded: any) => {
-				if (err) {
-					reject(new ForbiddenError('Forbidden'));
-				}
+    foundUser.removeRefreshToken(refreshToken);
+    const newRefreshTokenArray = foundUser.refreshTokens;
 
-				const decodedPayload = decoded as jwtUserPayload;
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, async (err, decoded: any) => {
+      if (err) {
+        foundUser?.revokeRefreshTokens();
+        foundUser.addRefreshToken(...newRefreshTokenArray);
+        await this.userRepository.save(foundUser);
+        throw new ForbiddenError('Forbidden');
+      }
+      return decoded;
+    });
+  }
 
-				const user = await this.userValidatorService.getUserByEmail(decodedPayload.email);
-				if (!user) {
-					reject(new UnauthorizedError('Unauthorized'));
-				}
-				resolve(decoded);
-		});
-	}
+  async verifyAccessToken(accessToken: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+      jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, (err, decoded: any) => {
+        if (err) {
+          reject(new ForbiddenError('Forbidden'));
 
-	async verifyAccessToken(accessToken: string): Promise<any> {
-		return new Promise((resolve, reject) => {
-			jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, (err, decoded: any) => {
-				if (err) {
-					reject(new ForbiddenError('Forbidden'));
+          return;
+        }
 
-					return;
-				}
-
-				resolve(decoded);
-			});
-		});
-	}
+        resolve(decoded);
+      });
+    });
+  }
 }
