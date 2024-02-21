@@ -10,7 +10,13 @@ import { UserNameMother } from './UserNameMother';
 import { UserPasswordMother } from './UserPasswordMother';
 
 export class UserMother {
-	static create(id: UserId, username: UserName, password: UserPassword, email: UserEmail, refreshTokens: string[]): User {
+	static create(
+		id: UserId,
+		username: UserName,
+		password: UserPassword,
+		email: UserEmail,
+		refreshTokens: string[]
+	): User {
 		return new User({ id, username, password, email, refreshTokens });
 	}
 
@@ -20,7 +26,7 @@ export class UserMother {
 			UserNameMother.random(),
 			await UserPasswordMother.random(),
 			UserEmailMother.random(),
-      []
+			[]
 		);
 	}
 
@@ -30,7 +36,7 @@ export class UserMother {
 			UserNameMother.create(request.username),
 			new UserPassword(request.password),
 			UserEmailMother.create(request.email),
-      []
+			[]
 		);
 	}
 }

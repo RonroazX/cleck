@@ -10,9 +10,9 @@ export class UserRepositoryMock implements UserRepository {
 		return Promise.resolve(null);
 	}
 
-  searchUserByToken(token: string): Promise<Nullable<User>> {
-    return Promise.resolve(null);
-  }
+	async searchUserByToken(token: string): Promise<Nullable<User>> {
+		return Promise.resolve(null);
+	}
 
 	async save(user: User): Promise<void> {
 		await this.mockSave(user);
