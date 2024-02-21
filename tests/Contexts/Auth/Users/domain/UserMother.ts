@@ -10,8 +10,8 @@ import { UserNameMother } from './UserNameMother';
 import { UserPasswordMother } from './UserPasswordMother';
 
 export class UserMother {
-	static create(id: UserId, username: UserName, password: UserPassword, email: UserEmail): User {
-		return new User({ id, username, password, email });
+	static create(id: UserId, username: UserName, password: UserPassword, email: UserEmail, refreshTokens: string[]): User {
+		return new User({ id, username, password, email, refreshTokens });
 	}
 
 	static async random(): Promise<User> {
@@ -19,7 +19,8 @@ export class UserMother {
 			UserIdMother.random(),
 			UserNameMother.random(),
 			await UserPasswordMother.random(),
-			UserEmailMother.random()
+			UserEmailMother.random(),
+      []
 		);
 	}
 
@@ -28,7 +29,8 @@ export class UserMother {
 			UserIdMother.create(request.id ?? UserIdMother.random().value),
 			UserNameMother.create(request.username),
 			new UserPassword(request.password),
-			UserEmailMother.create(request.email)
+			UserEmailMother.create(request.email),
+      []
 		);
 	}
 }
