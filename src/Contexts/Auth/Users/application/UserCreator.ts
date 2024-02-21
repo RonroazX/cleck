@@ -33,7 +33,8 @@ export class UserCreator {
 			id: new UserId(id ?? uuidv4()),
 			email: userEmail,
 			username: new UserName(username),
-			password: hashedPassword
+			password: hashedPassword,
+      refreshTokens: [],
 		});
 
 		await this.userRepository.save(user);

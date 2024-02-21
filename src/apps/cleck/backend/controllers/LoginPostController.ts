@@ -2,6 +2,8 @@ import { NextFunction, Request, Response } from 'express';
 
 import { UserValidator } from '../../../../Contexts/Auth/Users/application/UserValidator';
 import { Controller } from './Controller';
+import { JWTService } from '../../../../Contexts/Auth/Users/application/JwtService';
+import { UserRepository } from '../../../../Contexts/Auth/Users/domain/UserRepository';
 
 type LoginPostRequest = Request & {
 	body: {
@@ -12,19 +14,40 @@ type LoginPostRequest = Request & {
 
 export class LoginPostController implements Controller {
 	private readonly userValidator: UserValidator;
-	constructor(opts: { userValidator: UserValidator }) {
+  private readonly jwtService: JWTService;
+  private readonly userRepository: UserRepository;
+	constructor(opts: { userValidator: UserValidator, jwtService: JWTService, userRepository: UserRepository }) {
 		this.userValidator = opts.userValidator;
+    this.jwtService = opts.jwtService;
+    this.userRepository = opts.userRepository;
 	}
 
 	async run(req: LoginPostRequest, res: Response, next: NextFunction): Promise<void> {
 		try {
+      const cookies = req.cookies;
 			const { email, password } = req.body;
 
-			const jwtTokens = await this.userValidator.run({ email, password });
+			const foundUser = await this.userValidator.run({ email, password });
 
-			const { accessToken, refreshToken } = jwtTokens;
+      const payload = { id: foundUser.id.value, username: foundUser.username.value, email: foundUser.email.value };
+		  const accessToken = this.jwtService.signAccessToken(payload);
+		  const newRefreshToken = this.jwtService.signRefreshToken(payload);
 
-			res.cookie('refreshToken', refreshToken, {
+      let newRefreshTokenArray = [];
+
+      if (!cookies.refreshToken) {
+        newRefreshTokenArray = foundUser.refreshTokens;
+      } else {
+        res.clearCookie('refreshToken', { httpOnly: true, sameSite: 'none', secure: true });
+        foundUser.removeRefreshToken(cookies.refreshToken);
+        newRefreshTokenArray = foundUser.refreshTokens;
+      }
+
+      foundUser.revokeRefreshTokens();
+      foundUser.addRefreshToken(...newRefreshTokenArray, newRefreshToken);
+      await this.userRepository.save(foundUser);
+
+			res.cookie('refreshToken', newRefreshToken, {
 				httpOnly: true,
 				secure: true,
 				sameSite: 'strict',

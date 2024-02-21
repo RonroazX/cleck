@@ -1,72 +1,31 @@
 import jwt from 'jsonwebtoken';
-import { ForbiddenError } from '../../../Shared/infrastructure/Errors/ForbiddenError';
-import { UserValidator } from './UserValidator';
-import { UserRepository } from '../domain/UserRepository';
 
-export interface jwtUserPayload {
-  id: string;
-  email: string;
-  username: string;
-}
-
+type TokenType = 'refreshToken' | 'accessToken';
 export class JWTService {
-  private readonly userValidatorService: UserValidator;
-  private readonly userRepository: UserRepository;
-
-  constructor(opts: { userValidator: UserValidator; userMongoRepository: UserRepository }) {
-    this.userValidatorService = opts.userValidator;
-    this.userRepository = opts.userMongoRepository;
-  }
-
   signAccessToken(payload: object): string {
-    return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '30s' });
+    const tokenSecret = process.env.ACCESS_TOKEN_SECRET;
+    if (!tokenSecret) throw new Error("ACCESS_TOKEN_SECRET is not defined");
+    return jwt.sign(payload, tokenSecret, { expiresIn: '30s' });
   }
 
   signRefreshToken(payload: object): string {
-    return jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '1d' });
+    const tokenSecret = process.env.REFRESH_TOKEN_SECRET;
+    if (!tokenSecret) throw new Error("REFRESH_TOKEN_SECRET is not defined");
+    return jwt.sign(payload, tokenSecret, { expiresIn: '15s' });
   }
 
-  async verifyRefreshToken(refreshToken: string): Promise<any> {
-    const foundUser = await this.userValidatorService.getUserByToken(refreshToken);
-
-    if (!foundUser) {
-      jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, async (err, decoded: any) => {
-        if (err) throw new ForbiddenError('Forbidden');
-        const hackedUser = await this.userValidatorService.getUserByEmail(decoded.email);
-        if (hackedUser) {
-          hackedUser.revokeRefreshTokens();
-          await this.userRepository.save(hackedUser);
-        }
-      });
-      throw new ForbiddenError('Forbidden');
-    }
-
-    foundUser.removeRefreshToken(refreshToken);
-    const newRefreshTokenArray = foundUser.refreshTokens;
-
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, async (err, decoded: any) => {
-      if (err) {
-        foundUser?.revokeRefreshTokens();
-        foundUser.addRefreshToken(...newRefreshTokenArray);
-        await this.userRepository.save(foundUser);
-        throw new ForbiddenError('Forbidden');
-      }
-      return decoded;
-    });
-  }
-
-  async verifyAccessToken(accessToken: string): Promise<any> {
+  async verify(token: string, tokenType: TokenType): Promise<any> {
+    const tokenSecret = tokenType == 'accessToken' ? process.env.ACCESS_TOKEN_SECRET : process.env.REFRESH_TOKEN_SECRET;
+    if (!tokenSecret) throw new Error("REFRESH_TOKEN_SECRET or ACCESS_TOKEN_SECRET is not defined");
     return new Promise((resolve, reject) => {
-      jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, (err, decoded: any) => {
+      jwt.verify(token, tokenSecret, (err, decoded) => {
         if (err) {
-          reject(new ForbiddenError('Forbidden'));
-
-          return;
+          reject(err);
         }
-
         resolve(decoded);
       });
-    });
+    })
   }
 }
+
+

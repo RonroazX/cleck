@@ -33,7 +33,7 @@ export async function validateJWT(
 			throw new UnauthorizedError('No token provided');
 		}
 
-		const result = await jwtService.verifyAccessToken(jwtToken);
+		const result = await jwtService.verify(jwtToken, 'accessToken');
 		// eslint-disable-next-line require-atomic-updates
 		req.body.user = result;
 		next();

@@ -35,7 +35,7 @@ export class MongoUserRepository extends MongoRepository<User> implements UserRe
     const collection = await this.collection();
 
     const userDocument = await collection.findOne<UserDocument>({
-      refreshToken: token
+      refreshTokens: { $in: [token]}
     });
 
     return userDocument ? User.fromPrimitives({

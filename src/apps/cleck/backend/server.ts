@@ -12,6 +12,7 @@ import { ConflictError } from '../../../Contexts/Shared/infrastructure/Errors/Co
 import { ForbiddenError } from '../../../Contexts/Shared/infrastructure/Errors/ForbiddenError';
 import { UnauthorizedError } from '../../../Contexts/Shared/infrastructure/Errors/UnauthorizedError';
 import { registerRoutes } from './routes';
+import { UserNotFound } from '../../../Contexts/Auth/Users/domain/UserNotFound';
 
 export class Server {
 	private readonly express: express.Express;
@@ -40,7 +41,7 @@ export class Server {
 		registerRoutes(router);
 
 		router.use((err: Error, req: Request, res: Response, _next: () => void) => {
-			if (err instanceof UnauthorizedError) {
+			if (err instanceof UnauthorizedError || err instanceof UserNotFound) {
 				return res.status(httpStatus.UNAUTHORIZED).send({ message: err.message });
 			}
 			if (err instanceof ConflictError) {
