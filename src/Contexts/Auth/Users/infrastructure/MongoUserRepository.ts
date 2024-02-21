@@ -9,7 +9,7 @@ interface UserDocument {
 	email: string;
 	username: string;
 	password: string;
-  refreshTokens: string[];
+	refreshTokens: string[];
 }
 
 export class MongoUserRepository extends MongoRepository<User> implements UserRepository {
@@ -26,26 +26,28 @@ export class MongoUserRepository extends MongoRepository<User> implements UserRe
 					email: userDocument.email,
 					password: userDocument.password,
 					username: userDocument.username,
-          refreshTokens: userDocument.refreshTokens,
+					refreshTokens: userDocument.refreshTokens
 				})
 			: null;
 	}
 
-  async searchUserByToken(token: string): Promise<Nullable<User>> {
-    const collection = await this.collection();
+	async searchUserByToken(token: string): Promise<Nullable<User>> {
+		const collection = await this.collection();
 
-    const userDocument = await collection.findOne<UserDocument>({
-      refreshTokens: { $in: [token]}
-    });
+		const userDocument = await collection.findOne<UserDocument>({
+			refreshTokens: { $in: [token] }
+		});
 
-    return userDocument ? User.fromPrimitives({
-      id: userDocument._id,
+		return userDocument
+			? User.fromPrimitives({
+					id: userDocument._id,
 					email: userDocument.email,
 					password: userDocument.password,
 					username: userDocument.username,
-          refreshTokens: userDocument.refreshTokens,
-    }) : null;
-  }
+					refreshTokens: userDocument.refreshTokens
+				})
+			: null;
+	}
 
 	async save(user: User): Promise<void> {
 		await this.persist(user.id.value, user);

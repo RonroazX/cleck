@@ -7,5 +7,5 @@ export interface UserRepository {
 
 	searchUserByEmail(email: UserEmail): Promise<Nullable<User>>;
 
-  searchUserByToken(token: string): Promise<Nullable<User>>;
+	searchUserByToken(token: string): Promise<Nullable<User>>;
 }

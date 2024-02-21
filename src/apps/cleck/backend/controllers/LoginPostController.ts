@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
 
-import { UserValidator } from '../../../../Contexts/Auth/Users/application/UserValidator';
-import { Controller } from './Controller';
 import { JWTService } from '../../../../Contexts/Auth/Users/application/JwtService';
+import { UserValidator } from '../../../../Contexts/Auth/Users/application/UserValidator';
 import { UserRepository } from '../../../../Contexts/Auth/Users/domain/UserRepository';
+import { Controller } from './Controller';
 
 type LoginPostRequest = Request & {
 	body: {
@@ -12,40 +12,52 @@ type LoginPostRequest = Request & {
 	};
 };
 
+type Cookies = {
+	refreshToken?: string;
+};
+
 export class LoginPostController implements Controller {
 	private readonly userValidator: UserValidator;
-  private readonly jwtService: JWTService;
-  private readonly userRepository: UserRepository;
-	constructor(opts: { userValidator: UserValidator, jwtService: JWTService, userRepository: UserRepository }) {
+	private readonly jwtService: JWTService;
+	private readonly userRepository: UserRepository;
+	constructor(opts: {
+		userValidator: UserValidator;
+		jwtService: JWTService;
+		userRepository: UserRepository;
+	}) {
 		this.userValidator = opts.userValidator;
-    this.jwtService = opts.jwtService;
-    this.userRepository = opts.userRepository;
+		this.jwtService = opts.jwtService;
+		this.userRepository = opts.userRepository;
 	}
 
 	async run(req: LoginPostRequest, res: Response, next: NextFunction): Promise<void> {
 		try {
-      const cookies = req.cookies;
+			const cookies: Cookies = req.cookies;
 			const { email, password } = req.body;
 
 			const foundUser = await this.userValidator.run({ email, password });
 
-      const payload = { id: foundUser.id.value, username: foundUser.username.value, email: foundUser.email.value };
-		  const accessToken = this.jwtService.signAccessToken(payload);
-		  const newRefreshToken = this.jwtService.signRefreshToken(payload);
+			const payload = {
+				id: foundUser.id.value,
+				username: foundUser.username.value,
+				email: foundUser.email.value
+			};
+			const accessToken = this.jwtService.signAccessToken(payload);
+			const newRefreshToken = this.jwtService.signRefreshToken(payload);
 
-      let newRefreshTokenArray = [];
+			let newRefreshTokenArray = [];
 
-      if (!cookies.refreshToken) {
-        newRefreshTokenArray = foundUser.refreshTokens;
-      } else {
-        res.clearCookie('refreshToken', { httpOnly: true, sameSite: 'none', secure: true });
-        foundUser.removeRefreshToken(cookies.refreshToken);
-        newRefreshTokenArray = foundUser.refreshTokens;
-      }
+			if (!cookies.refreshToken) {
+				newRefreshTokenArray = foundUser.refreshTokens;
+			} else {
+				res.clearCookie('refreshToken', { httpOnly: true, sameSite: 'none', secure: true });
+				foundUser.removeRefreshToken(cookies.refreshToken);
+				newRefreshTokenArray = foundUser.refreshTokens;
+			}
 
-      foundUser.revokeRefreshTokens();
-      foundUser.addRefreshToken(...newRefreshTokenArray, newRefreshToken);
-      await this.userRepository.save(foundUser);
+			foundUser.revokeRefreshTokens();
+			foundUser.addRefreshToken(...newRefreshTokenArray, newRefreshToken);
+			await this.userRepository.save(foundUser);
 
 			res.cookie('refreshToken', newRefreshToken, {
 				httpOnly: true,

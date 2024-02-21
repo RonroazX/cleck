@@ -10,10 +10,7 @@ export class UserValidator {
 	private readonly userRepository: UserRepository;
 	private readonly passwordValidator: PasswordValidator;
 
-	constructor(opts: {
-		userRepository: UserRepository;
-		passwordValidator: PasswordValidator;
-	}) {
+	constructor(opts: { userRepository: UserRepository; passwordValidator: PasswordValidator }) {
 		this.userRepository = opts.userRepository;
 		this.passwordValidator = opts.passwordValidator;
 	}
@@ -33,14 +30,14 @@ export class UserValidator {
 			throw new UserNotFound(`User: <${user.email.value} not found>`);
 		}
 
-    return user;
+		return user;
 	}
 
 	async getUserByEmail(email: string): Promise<Nullable<User>> {
 		return this.userRepository.searchUserByEmail(new UserEmail(email));
 	}
 
-  async getUserByToken(token: string): Promise<Nullable<User>> {
+	async getUserByToken(token: string): Promise<Nullable<User>> {
 		return this.userRepository.searchUserByToken(token);
 	}
 }

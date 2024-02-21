@@ -8,11 +8,11 @@ import helmet from 'helmet';
 import * as http from 'http';
 import httpStatus from 'http-status';
 
+import { UserNotFound } from '../../../Contexts/Auth/Users/domain/UserNotFound';
 import { ConflictError } from '../../../Contexts/Shared/infrastructure/Errors/ConflictError';
 import { ForbiddenError } from '../../../Contexts/Shared/infrastructure/Errors/ForbiddenError';
 import { UnauthorizedError } from '../../../Contexts/Shared/infrastructure/Errors/UnauthorizedError';
 import { registerRoutes } from './routes';
-import { UserNotFound } from '../../../Contexts/Auth/Users/domain/UserNotFound';
 
 export class Server {
 	private readonly express: express.Express;
