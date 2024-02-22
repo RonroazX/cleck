@@ -20,7 +20,6 @@ export class LogoutPostController implements Controller {
 		}
 
 		const foundUser = await this.userRepository.searchUserByToken(cookies.refreshToken);
-		console.log(foundUser);
 		if (!foundUser) {
 			res.clearCookie('refreshToken', { httpOnly: true, sameSite: 'none', secure: true });
 			res.sendStatus(httpStatus.NO_CONTENT);

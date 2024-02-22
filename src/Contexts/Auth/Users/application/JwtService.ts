@@ -17,7 +17,7 @@ export class JWTService {
 			throw new Error('REFRESH_TOKEN_SECRET is not defined');
 		}
 
-		return jwt.sign(payload, tokenSecret, { expiresIn: '15s' });
+		return jwt.sign(payload, tokenSecret, { expiresIn: '1d' });
 	}
 
 	async verify(token: string, tokenType: TokenType): Promise<any> {

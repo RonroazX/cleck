@@ -25,7 +25,9 @@ export class RefreshPostController implements Controller {
 		const cookies: { refreshToken: string } = req.cookies;
 
 		if (!cookies.refreshToken) {
-			throw new UnauthorizedError('No refresh token provided');
+			next(new UnauthorizedError('No refresh token provided'));
+
+			return;
 		}
 
 		const refreshToken = cookies.refreshToken;
@@ -33,9 +35,11 @@ export class RefreshPostController implements Controller {
 		res.clearCookie('refreshToken', { httpOnly: true, sameSite: 'none', secure: true });
 
 		const foundUser = await this.userValidatorService.getUserByToken(refreshToken);
+    console.log(foundUser);
 
 		if (!foundUser) {
 			try {
+				console.log('reuse detected');
 				const decoded: { id: string; username: string; email: string } =
 					await this.jwtService.verify(refreshToken, 'refreshToken');
 				const hackedUser = await this.userValidatorService.getUserByEmail(decoded.email);
@@ -43,6 +47,7 @@ export class RefreshPostController implements Controller {
 					hackedUser.revokeRefreshTokens();
 					await this.userRepository.save(hackedUser);
 				}
+				throw new ForbiddenError('Forbidden');
 			} catch (error) {
 				next(new ForbiddenError('Forbidden'));
 			}

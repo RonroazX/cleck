@@ -50,9 +50,10 @@ export class LoginPostController implements Controller {
 			if (!cookies.refreshToken) {
 				newRefreshTokenArray = foundUser.refreshTokens;
 			} else {
+        const foundToken = await this.userRepository.searchUserByToken(cookies.refreshToken);
+        newRefreshTokenArray = !foundToken ? [] : foundUser.refreshTokens;
 				res.clearCookie('refreshToken', { httpOnly: true, sameSite: 'none', secure: true });
 				foundUser.removeRefreshToken(cookies.refreshToken);
-				newRefreshTokenArray = foundUser.refreshTokens;
 			}
 
 			foundUser.revokeRefreshTokens();
