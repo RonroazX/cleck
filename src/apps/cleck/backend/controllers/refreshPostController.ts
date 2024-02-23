@@ -35,11 +35,9 @@ export class RefreshPostController implements Controller {
 		res.clearCookie('refreshToken', { httpOnly: true, sameSite: 'none', secure: true });
 
 		const foundUser = await this.userValidatorService.getUserByToken(refreshToken);
-    console.log(foundUser);
 
 		if (!foundUser) {
 			try {
-				console.log('reuse detected');
 				const decoded: { id: string; username: string; email: string } =
 					await this.jwtService.verify(refreshToken, 'refreshToken');
 				const hackedUser = await this.userValidatorService.getUserByEmail(decoded.email);
@@ -63,8 +61,7 @@ export class RefreshPostController implements Controller {
 				const payload = { id: decoded.id, username: decoded.username, email: decoded.email };
 				const accessToken = this.jwtService.signAccessToken(payload);
 				const newRefreshToken = this.jwtService.signRefreshToken(payload);
-
-				foundUser.addRefreshToken(...newRefreshTokenArray, newRefreshToken);
+				foundUser.addRefreshToken(newRefreshToken);
 				await this.userRepository.save(foundUser);
 
 				res.cookie('refreshToken', newRefreshToken, {

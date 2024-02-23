@@ -66,7 +66,6 @@ export class LoginPostController implements Controller {
 				sameSite: 'strict',
 				maxAge: 24 * 60 * 60 * 1000
 			});
-
 			res.json({ accessToken });
 		} catch (e) {
 			next(e);
