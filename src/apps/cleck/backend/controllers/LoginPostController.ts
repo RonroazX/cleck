@@ -45,21 +45,17 @@ export class LoginPostController implements Controller {
 			const accessToken = this.jwtService.signAccessToken(payload);
 			const newRefreshToken = this.jwtService.signRefreshToken(payload);
 
-			let newRefreshTokenArray = [];
-
-			if (!cookies.refreshToken) {
-				newRefreshTokenArray = foundUser.refreshTokens;
-			} else {
-        const foundToken = await this.userRepository.searchUserByToken(cookies.refreshToken);
-        newRefreshTokenArray = !foundToken ? [] : foundUser.refreshTokens;
-				res.clearCookie('refreshToken', { httpOnly: true, sameSite: 'none', secure: true });
-				foundUser.removeRefreshToken(cookies.refreshToken);
+			if (cookies.refreshToken) {
+				const foundUserWithToken = await this.userRepository.searchUserByToken(cookies.refreshToken);
+				if (!foundUserWithToken) {
+          foundUser.revokeRefreshTokens();
+				}
+        foundUser.removeRefreshToken(cookies.refreshToken);
+        res.clearCookie('refreshToken', { httpOnly: true, sameSite: 'none', secure: true });
 			}
 
-			foundUser.revokeRefreshTokens();
-			foundUser.addRefreshToken(...newRefreshTokenArray, newRefreshToken);
-			await this.userRepository.save(foundUser);
-
+      foundUser.addRefreshToken(newRefreshToken);
+      this.userRepository.save(foundUser);
 			res.cookie('refreshToken', newRefreshToken, {
 				httpOnly: true,
 				secure: true,

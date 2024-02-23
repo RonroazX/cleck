@@ -53,7 +53,6 @@ export class RefreshPostController implements Controller {
 
 		if (foundUser) {
 			foundUser.removeRefreshToken(refreshToken);
-			const newRefreshTokenArray = foundUser.refreshTokens;
 			try {
 				const decoded: { id: string; username: string; email: string } =
 					await this.jwtService.verify(refreshToken, 'refreshToken');
@@ -72,7 +71,6 @@ export class RefreshPostController implements Controller {
 				});
 				res.json({ accessToken });
 			} catch (error) {
-				foundUser.addRefreshToken(...newRefreshTokenArray);
 				await this.userRepository.save(foundUser);
 				next(new ForbiddenError('Forbidden'));
 			}
