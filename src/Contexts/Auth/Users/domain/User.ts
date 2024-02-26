@@ -17,7 +17,6 @@ export class User extends AggregateRoot {
 	readonly username: UserName;
 	readonly email: UserEmail;
 	readonly password: UserHashedPassword;
-	private _refreshTokens: string[];
 
 	constructor({ id, username, email, password, refreshTokens }: UserParams) {
 		super();
@@ -25,7 +24,6 @@ export class User extends AggregateRoot {
 		this.username = username;
 		this.email = email;
 		this.password = password;
-		this._refreshTokens = refreshTokens;
 	}
 
 	static fromPrimitives(plainData: {
@@ -49,30 +47,12 @@ export class User extends AggregateRoot {
 		username: string;
 		email: string;
 		password: string;
-		refreshTokens: string[];
 	} {
 		return {
 			id: this.id.value,
 			username: this.username.value,
 			email: this.email.value,
 			password: this.password.value,
-			refreshTokens: this._refreshTokens
 		};
-	}
-
-	public get refreshTokens(): string[] {
-		return this._refreshTokens;
-	}
-
-	revokeRefreshTokens(): void {
-		this._refreshTokens = [];
-	}
-
-	addRefreshToken(...token: string[]): void {
-		this._refreshTokens.push(...token);
-	}
-
-	removeRefreshToken(token: string): void {
-		this._refreshTokens = this.refreshTokens.filter(rt => rt !== token);
 	}
 }
