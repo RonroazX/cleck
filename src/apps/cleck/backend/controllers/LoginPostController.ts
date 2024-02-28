@@ -1,9 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
-
-import { JWTService } from '../../../../Contexts/Auth/Users/application/JwtService';
 import { UserValidator } from '../../../../Contexts/Auth/Users/application/UserValidator';
 import { UserRepository } from '../../../../Contexts/Auth/Users/domain/UserRepository';
 import { Controller } from './Controller';
+import { TokenCreator } from '../../../../Contexts/Auth/Tokens/application/TokenCreator';
+import { RefreshTokenService } from '../../../../Contexts/Auth/Tokens/application/RefreshTokenService';
+import { getClientIp } from 'request-ip';
 
 type LoginPostRequest = Request & {
 	body: {
@@ -18,22 +19,26 @@ type Cookies = {
 
 export class LoginPostController implements Controller {
 	private readonly userValidator: UserValidator;
-	private readonly jwtService: JWTService;
 	private readonly userRepository: UserRepository;
+  private readonly refreshTokenService: RefreshTokenService;
+
 	constructor(opts: {
 		userValidator: UserValidator;
-		jwtService: JWTService;
 		userRepository: UserRepository;
+    refreshTokenService: RefreshTokenService;
 	}) {
 		this.userValidator = opts.userValidator;
-		this.jwtService = opts.jwtService;
 		this.userRepository = opts.userRepository;
+    this.refreshTokenService = opts.refreshTokenService;
 	}
 
 	async run(req: LoginPostRequest, res: Response, next: NextFunction): Promise<void> {
 		try {
 			const cookies: Cookies = req.cookies;
+      const userAgent = req.headers['user-agent'] ?? 'tango';
+      const ip = getClientIp(req);
 			const { email, password } = req.body;
+      console.log(ip);
 
 			const foundUser = await this.userValidator.run({ email, password });
 
@@ -42,23 +47,28 @@ export class LoginPostController implements Controller {
 				username: foundUser.username.value,
 				email: foundUser.email.value
 			};
-			const accessToken = this.jwtService.signAccessToken(payload);
-			const newRefreshToken = this.jwtService.signRefreshToken(payload);
+			const accessToken = TokenCreator.createJwtAccessToken(payload);
+			const newJWTRefreshToken = TokenCreator.createJwtRefreshToken(payload);
 
 			if (cookies.refreshToken) {
 				const foundUserWithToken = await this.userRepository.searchUserByToken(
 					cookies.refreshToken
 				);
 				if (!foundUserWithToken) {
-					foundUser.revokeRefreshTokens();
+          await this.refreshTokenService.revokeTokensByUserId(foundUser.id.value);
 				}
-				foundUser.removeRefreshToken(cookies.refreshToken);
+        await this.refreshTokenService.revokeTokenByRefreshToken(cookies.refreshToken);
 				res.clearCookie('refreshToken', { httpOnly: true, sameSite: 'none', secure: true });
 			}
-
-			foundUser.addRefreshToken(newRefreshToken);
-			this.userRepository.save(foundUser);
-			res.cookie('refreshToken', newRefreshToken, {
+      const newRefreshToken = TokenCreator.createRefreshToken({
+        userId: foundUser.id.value,
+        isActive: true,
+        jwt: newJWTRefreshToken,
+        userAgent: userAgent,
+        userIP: '192.168.10.10'
+      });
+      await this.refreshTokenService.saveRefreshToken(newRefreshToken);
+			res.cookie('refreshToken', newJWTRefreshToken, {
 				httpOnly: true,
 				secure: true,
 				sameSite: 'strict',

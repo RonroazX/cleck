@@ -1,13 +1,13 @@
 import { NextFunction, Request, Response } from 'express';
 import httpStatus from 'http-status';
 
-import { UserRepository } from '../../../../Contexts/Auth/Users/domain/UserRepository';
 import { Controller } from './Controller';
+import { RefreshTokenService } from '../../../../Contexts/Auth/Tokens/application/RefreshTokenService';
 
 export class LogoutPostController implements Controller {
-	private readonly userRepository: UserRepository;
-	constructor(opts: { userRepository: UserRepository }) {
-		this.userRepository = opts.userRepository;
+	private readonly refreshTokenService: RefreshTokenService;
+	constructor(opts: { refreshTokenService: RefreshTokenService }) {
+		this.refreshTokenService = opts.refreshTokenService;
 	}
 
 	async run(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -19,16 +19,14 @@ export class LogoutPostController implements Controller {
 			return;
 		}
 
-		const foundUser = await this.userRepository.searchUserByToken(cookies.refreshToken);
-		if (!foundUser) {
+		const foundToken = await this.refreshTokenService.searchTokenByRefreshToken(cookies.refreshToken);
+		if (!foundToken) {
 			res.clearCookie('refreshToken', { httpOnly: true, sameSite: 'none', secure: true });
 			res.sendStatus(httpStatus.NO_CONTENT);
 
 			return;
 		}
-
-		foundUser.removeRefreshToken(cookies.refreshToken);
-		await this.userRepository.save(foundUser);
+    await this.refreshTokenService.revokeTokenByRefreshToken(cookies.refreshToken);
 
 		res.clearCookie('refreshToken', { httpOnly: true, sameSite: 'none', secure: true });
 		res.sendStatus(httpStatus.NO_CONTENT);

@@ -1,79 +1,78 @@
 import { NextFunction, Request, Response } from 'express';
-
-import { JWTService } from '../../../../Contexts/Auth/Users/application/JwtService';
-import { UserValidator } from '../../../../Contexts/Auth/Users/application/UserValidator';
-import { UserRepository } from '../../../../Contexts/Auth/Users/domain/UserRepository';
 import { ForbiddenError } from '../../../../Contexts/Shared/infrastructure/Errors/ForbiddenError';
 import { UnauthorizedError } from '../../../../Contexts/Shared/infrastructure/Errors/UnauthorizedError';
 import { Controller } from './Controller';
+import { RefreshTokenService } from '../../../../Contexts/Auth/Tokens/application/RefreshTokenService';
+import { TokenValidator } from '../../../../Contexts/Auth/Tokens/application/TokenValidator';
+import { UserValidator } from '../../../../Contexts/Auth/Users/application/UserValidator';
+import { TokenCreator } from '../../../../Contexts/Auth/Tokens/application/TokenCreator';
 
 export class RefreshPostController implements Controller {
-	private readonly jwtService: JWTService;
-	private readonly userValidatorService: UserValidator;
-	private readonly userRepository: UserRepository;
-	constructor(opts: {
-		jwtService: JWTService;
-		userValidator: UserValidator;
-		userRepository: UserRepository;
-	}) {
-		this.jwtService = opts.jwtService;
-		this.userValidatorService = opts.userValidator;
-		this.userRepository = opts.userRepository;
-	}
+  private readonly refreshTokenService: RefreshTokenService;
+  private readonly userValidatorService: UserValidator;
+  constructor(opts: { refreshTokenService: RefreshTokenService; userValidator: UserValidator }) {
+    this.refreshTokenService = opts.refreshTokenService;
+    this.userValidatorService = opts.userValidator;
+  }
 
-	async run(req: Request, res: Response, next: NextFunction): Promise<void> {
-		const cookies: { refreshToken: string } = req.cookies;
+  async run(req: Request, res: Response, next: NextFunction): Promise<void> {
+    const cookies: { refreshToken: string } = req.cookies;
+    const userAgent = req.headers['user-agent'] ?? 'tango';
+    //const ip = req.ip ?? '';
 
-		if (!cookies.refreshToken) {
-			next(new UnauthorizedError('No refresh token provided'));
 
-			return;
-		}
+    if (!cookies.refreshToken) {
+      next(new UnauthorizedError('No refresh token provided'));
 
-		const refreshToken = cookies.refreshToken;
+      return;
+    }
 
-		res.clearCookie('refreshToken', { httpOnly: true, sameSite: 'none', secure: true });
+    const refreshToken = cookies.refreshToken;
 
-		const foundUser = await this.userValidatorService.getUserByToken(refreshToken);
+    res.clearCookie('refreshToken', { httpOnly: true, sameSite: 'none', secure: true });
 
-		if (!foundUser) {
-			try {
-				const decoded: { id: string; username: string; email: string } =
-					await this.jwtService.verify(refreshToken, 'refreshToken');
-				const hackedUser = await this.userValidatorService.getUserByEmail(decoded.email);
-				if (hackedUser) {
-					hackedUser.revokeRefreshTokens();
-					await this.userRepository.save(hackedUser);
-				}
-				throw new ForbiddenError('Forbidden');
-			} catch (error) {
-				next(new ForbiddenError('Forbidden'));
-			}
-		}
+    const foundToken = await this.refreshTokenService.searchTokenByRefreshToken(refreshToken);
 
-		if (foundUser) {
-			foundUser.removeRefreshToken(refreshToken);
-			try {
-				const decoded: { id: string; username: string; email: string } =
-					await this.jwtService.verify(refreshToken, 'refreshToken');
+    if (!foundToken) {
+      try {
+        const decoded = TokenValidator.verify(refreshToken, 'refreshToken');
+        const hackedUser = await this.userValidatorService.getUserByEmail(decoded.email);
+        if (hackedUser) {
+          await this.refreshTokenService.revokeTokensByUserId(hackedUser.id.value);
+        }
+        throw new ForbiddenError('Forbidden');
+      } catch (error) {
+        next(new ForbiddenError('Forbidden'));
+      }
+    }
 
-				const payload = { id: decoded.id, username: decoded.username, email: decoded.email };
-				const accessToken = this.jwtService.signAccessToken(payload);
-				const newRefreshToken = this.jwtService.signRefreshToken(payload);
-				foundUser.addRefreshToken(newRefreshToken);
-				await this.userRepository.save(foundUser);
-
-				res.cookie('refreshToken', newRefreshToken, {
-					httpOnly: true,
-					secure: true,
-					sameSite: 'strict',
-					maxAge: 24 * 60 * 60 * 1000
-				});
-				res.json({ accessToken });
-			} catch (error) {
-				await this.userRepository.save(foundUser);
-				next(new ForbiddenError('Forbidden'));
-			}
-		}
-	}
+    if (foundToken) {
+      await this.refreshTokenService.revokeTokenByRefreshToken(refreshToken);
+      try {
+        const decoded = TokenValidator.verify(refreshToken, 'refreshToken');
+        const payload = { id: decoded.id, username: decoded.username, email: decoded.email };
+        const accessToken = TokenCreator.createJwtAccessToken(payload);
+        const newJWTRefreshToken = TokenCreator.createJwtRefreshToken(payload);
+        const newRefreshToken = TokenCreator.createRefreshToken({
+          userId: decoded.id,
+          isActive: true,
+          jwt: newJWTRefreshToken,
+          userAgent: userAgent,
+          userIP: '192.168.1.1' //todo: cambiar por la variable ip
+        });
+        await this.refreshTokenService.saveRefreshToken(newRefreshToken);
+        res.cookie('refreshToken', newJWTRefreshToken, {
+          httpOnly: true,
+          secure: true,
+          sameSite: 'strict',
+          maxAge: 24 * 60 * 60 * 1000
+        });
+        res.json({ accessToken });
+      } catch (error) {
+        console.log(error);
+        await this.refreshTokenService.saveRefreshToken(foundToken);
+        next(new ForbiddenError('Forbidden'));
+      }
+    }
+  }
 }

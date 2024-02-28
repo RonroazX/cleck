@@ -8,7 +8,7 @@ export class UserIP extends StringValueObject {
   }
 
   private validate(ip: string) {
-    const ipRegex = new RegExp('\b((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.|$)){4}\b');
+    const ipRegex = new RegExp('\\b((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\\.|$)){4}\\b');
     if (ip.match(ipRegex)) {
       return true;
     }

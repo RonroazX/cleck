@@ -2,7 +2,8 @@ import { AggregateRoot } from "../../../Shared/domain/AggregateRoot";
 import { TokenId } from "../../Shared/domain/Users/TokenId";
 import { UserIP } from "../../Shared/domain/Users/UserIP";
 import { UserId } from "../../Shared/domain/Users/UserId";
-import { UserAgent } from "./UserAgent";
+import { JWT } from "./JWT";
+import { UserAgent } from "../../Users/domain/UserAgent";
 
 export interface RefreshTokenParams {
   isActive?: boolean;
@@ -12,9 +13,8 @@ export interface RefreshTokenParams {
   userId: UserId;
   tokenId: TokenId;
   userIP: UserIP;
-  jwt: string;
+  jwt: JWT;
 }
-
 
 export class RefreshToken extends AggregateRoot {
   readonly isActive: boolean;
@@ -24,7 +24,7 @@ export class RefreshToken extends AggregateRoot {
   readonly userId: UserId;
   readonly userIP: UserIP;
   readonly tokenId: TokenId;
-  readonly jwt: string;
+  readonly jwt: JWT;
 
   constructor({isActive = true, userAgent, dateAdd, dateExp, userId, tokenId, userIP, jwt}: RefreshTokenParams) {
     super();
@@ -48,6 +48,8 @@ export class RefreshToken extends AggregateRoot {
     dateExp: Date;
     userId: string;
     tokenId: string;
+    userIP: string;
+    jwt: string;
   } {
     return {
       isActive: this.isActive,
@@ -59,6 +61,33 @@ export class RefreshToken extends AggregateRoot {
       dateExp: this.dateExp,
       userId: this.userId.value,
       tokenId: this.tokenId.value,
+      jwt: this.jwt.value,
+      userIP: this.userIP.value,
     }
+  }
+
+  static fromPrimitives(plainData: {
+    isActive: boolean;
+    userAgent: {
+      userAgent: string;
+      userAgentType: string;
+    }
+    dateAdd: Date;
+    dateExp: Date;
+    userId: string;
+    tokenId: string;
+    userIP: string;
+    jwt: string;
+  }) {
+    return new RefreshToken({
+      isActive: plainData.isActive,
+      userAgent: new UserAgent(plainData.userAgent.userAgent),
+      dateAdd: plainData.dateAdd,
+      dateExp: plainData.dateExp,
+      jwt: new JWT(plainData.jwt),
+      userId: new UserId(plainData.userId),
+      tokenId: new TokenId(plainData.tokenId),
+      userIP: new UserIP(plainData.userIP)
+    })
   }
 }
