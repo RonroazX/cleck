@@ -1,3 +1,3 @@
-import { Uuid } from "../../../../Shared/domain/value-object/Uuid";
+import { Uuid } from '../../../../Shared/domain/value-object/Uuid';
 
 export class TokenId extends Uuid {}

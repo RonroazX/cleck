@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
-import { UnauthorizedError } from '../../../../Contexts/Shared/infrastructure/Errors/UnauthorizedError';
+
 import { TokenValidator } from '../../../../Contexts/Auth/Tokens/application/TokenValidator';
+import { UnauthorizedError } from '../../../../Contexts/Shared/infrastructure/Errors/UnauthorizedError';
 
 export interface UserRequest extends Request {
 	body: {
@@ -12,11 +13,7 @@ export interface UserRequest extends Request {
 	};
 }
 
-export async function validateJWT(
-	req: UserRequest,
-	res: Response,
-	next: NextFunction
-): Promise<void> {
+export function validateJWT(req: UserRequest, res: Response, next: NextFunction): void {
 	try {
 		const authHeaders = req.headers.authorization ?? (req.headers.Authorization as string);
 

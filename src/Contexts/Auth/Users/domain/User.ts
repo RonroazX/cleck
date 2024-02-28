@@ -52,7 +52,7 @@ export class User extends AggregateRoot {
 			id: this.id.value,
 			username: this.username.value,
 			email: this.email.value,
-			password: this.password.value,
+			password: this.password.value
 		};
 	}
 }

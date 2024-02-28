@@ -2,8 +2,10 @@ import * as awilix from 'awilix';
 
 import { MongoEnvironmentArranger } from '../../../../../tests/Contexts/Shared/infrastructure/mongo/MongoEnvironmentArranger';
 import { MongoConfigFactory } from '../../../../Contexts/Auth/Shared/infrastructure/persistance/mongo/MongoConfigFactory';
-import { HashUserPasswordService } from '../../../../Contexts/Auth/Users/application/HashUserPassword';
+import { RefreshTokenService } from '../../../../Contexts/Auth/Tokens/application/RefreshTokenService';
 import { TokenCreator } from '../../../../Contexts/Auth/Tokens/application/TokenCreator';
+import { MongoTokenRepository } from '../../../../Contexts/Auth/Tokens/infrastructure/MongoTokenRepository';
+import { HashUserPasswordService } from '../../../../Contexts/Auth/Users/application/HashUserPassword';
 import { PasswordValidator } from '../../../../Contexts/Auth/Users/application/PasswordValidator';
 import { UserCreator } from '../../../../Contexts/Auth/Users/application/UserCreator';
 import { UserEmailExistanceChecker } from '../../../../Contexts/Auth/Users/application/UserEmailExistanceChecker';
@@ -16,8 +18,6 @@ import { LogoutPostController } from '../controllers/LogoutPostController';
 import { RefreshPostController } from '../controllers/refreshPostController';
 import { SignupPostController } from '../controllers/SignupPostController';
 import StatusGetController from '../controllers/StatusGetController';
-import { RefreshTokenService } from '../../../../Contexts/Auth/Tokens/application/RefreshTokenService';
-import { MongoTokenRepository } from '../../../../Contexts/Auth/Tokens/infrastructure/MongoTokenRepository';
 
 const container = awilix.createContainer({
 	injectionMode: awilix.InjectionMode.PROXY,
@@ -40,11 +40,11 @@ container.register({
 	refreshPostController: awilix.asClass(RefreshPostController).singleton(),
 	environmentArranger: awilix.asClass(MongoEnvironmentArranger).singleton(),
 	hashService: awilix.asClass(HashUserPasswordService).singleton(),
-  refreshTokenService: awilix.asClass(RefreshTokenService).singleton(),
+	refreshTokenService: awilix.asClass(RefreshTokenService).singleton(),
 	userValidator: awilix.asClass(UserValidator).singleton(),
 	passwordValidator: awilix.asClass(PasswordValidator).singleton(),
 	tokenCreator: awilix.asClass(TokenCreator).singleton(),
-  tokenRepository: awilix.asClass(MongoTokenRepository).singleton(),
+	tokenRepository: awilix.asClass(MongoTokenRepository).singleton(),
 	userEmailExistanceChecker: awilix.asClass(UserEmailExistanceChecker).singleton()
 });
 
