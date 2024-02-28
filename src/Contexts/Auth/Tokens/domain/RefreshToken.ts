@@ -1,5 +1,5 @@
 import { AggregateRoot } from '../../../Shared/domain/AggregateRoot';
-import { TokenId } from '../../Shared/domain/Users/TokenId';
+import { ClientId } from '../../Shared/domain/Users/TokenId';
 import { UserId } from '../../Shared/domain/Users/UserId';
 import { UserIP } from '../../Shared/domain/Users/UserIP';
 import { UserAgent } from '../../Users/domain/UserAgent';
@@ -10,8 +10,9 @@ export interface RefreshTokenParams {
 	userAgent: UserAgent;
 	dateAdd: Date;
 	dateExp: Date;
+  dateUpd: Date;
 	userId: UserId;
-	tokenId: TokenId;
+	clientId: ClientId;
 	userIP: UserIP;
 	jwt: JWT;
 }
@@ -20,10 +21,11 @@ export class RefreshToken extends AggregateRoot {
 	readonly isActive: boolean;
 	readonly userAgent: UserAgent;
 	readonly dateAdd: Date;
+  readonly dateUpd: Date;
 	readonly dateExp: Date;
 	readonly userId: UserId;
 	readonly userIP: UserIP;
-	readonly tokenId: TokenId;
+	readonly clientId: ClientId;
 	readonly jwt: JWT;
 
 	constructor({
@@ -31,8 +33,9 @@ export class RefreshToken extends AggregateRoot {
 		userAgent,
 		dateAdd,
 		dateExp,
+    dateUpd,
 		userId,
-		tokenId,
+		clientId,
 		userIP,
 		jwt
 	}: RefreshTokenParams) {
@@ -41,8 +44,9 @@ export class RefreshToken extends AggregateRoot {
 		this.userAgent = userAgent;
 		this.dateAdd = dateAdd;
 		this.dateExp = dateExp;
+    this.dateUpd = dateUpd;
 		this.userId = userId;
-		this.tokenId = tokenId;
+		this.clientId = clientId;
 		this.jwt = jwt;
 		this.userIP = userIP;
 	}
@@ -55,8 +59,9 @@ export class RefreshToken extends AggregateRoot {
 		};
 		dateAdd: Date;
 		dateExp: Date;
+    dateUpd: Date;
 		userId: string;
-		tokenId: string;
+		clientId: string;
 		userIP: string;
 		jwt: string;
 	}): RefreshToken {
@@ -64,10 +69,11 @@ export class RefreshToken extends AggregateRoot {
 			isActive: plainData.isActive,
 			userAgent: new UserAgent(plainData.userAgent.userAgent),
 			dateAdd: plainData.dateAdd,
+      dateUpd: plainData.dateUpd,
 			dateExp: plainData.dateExp,
 			jwt: new JWT(plainData.jwt),
 			userId: new UserId(plainData.userId),
-			tokenId: new TokenId(plainData.tokenId),
+			clientId: new ClientId(plainData.clientId),
 			userIP: new UserIP(plainData.userIP)
 		});
 	}
@@ -81,7 +87,7 @@ export class RefreshToken extends AggregateRoot {
 		dateAdd: Date;
 		dateExp: Date;
 		userId: string;
-		tokenId: string;
+		clientId: string;
 		userIP: string;
 		jwt: string;
 	} {
@@ -94,7 +100,7 @@ export class RefreshToken extends AggregateRoot {
 			dateAdd: this.dateAdd,
 			dateExp: this.dateExp,
 			userId: this.userId.value,
-			tokenId: this.tokenId.value,
+			clientId: this.clientId.value,
 			jwt: this.jwt.value,
 			userIP: this.userIP.value
 		};

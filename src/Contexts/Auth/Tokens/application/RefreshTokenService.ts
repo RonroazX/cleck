@@ -23,4 +23,8 @@ export class RefreshTokenService {
 	async searchTokenByRefreshToken(refreshToken: string): Promise<Nullable<RefreshToken>> {
 		return this.tokenRepository.searchTokenByRefreshToken(refreshToken);
 	}
+
+  async updateToken(oldRefreshToken: string, newRefreshToken: string, dateUpd: Date): Promise<void> {
+    return this.tokenRepository.updateToken(oldRefreshToken, newRefreshToken, dateUpd);
+  }
 }

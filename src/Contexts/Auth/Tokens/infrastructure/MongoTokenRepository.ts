@@ -7,9 +7,10 @@ interface RefreshTokenDocument {
 	_id: string;
 	dateAdd: Date;
 	dateExp: Date;
+  dateUpd: Date;
 	isActive: boolean;
 	jwt: string;
-	tokenId: string;
+	clientId: string;
 	userId: string;
 	userIP: string;
 	userAgent: {
@@ -19,6 +20,11 @@ interface RefreshTokenDocument {
 }
 
 export class MongoTokenRepository extends MongoRepository<RefreshToken> implements TokenRepository {
+  async updateToken(refreshToken: string, newRefreshToken: string, dateUpd: Date): Promise<void> {
+    const collection = await this.collection();
+		await collection.updateOne({ jwt: refreshToken }, { $set: { jwt: newRefreshToken, dateUpd:  dateUpd} });
+  }
+
 	async revokeTokenByRefreshToken(refreshToken: string): Promise<void> {
 		const collection = await this.collection();
 		await collection.updateOne({ jwt: refreshToken }, { $set: { isActive: false } });
@@ -30,7 +36,7 @@ export class MongoTokenRepository extends MongoRepository<RefreshToken> implemen
 	}
 
 	async save(token: RefreshToken): Promise<void> {
-		await this.persist(token.tokenId.value, token);
+		await this.persist(token.clientId.value, token);
 	}
 
 	async searchTokenByRefreshToken(refreshToken: string): Promise<Nullable<RefreshToken>> {
@@ -42,15 +48,16 @@ export class MongoTokenRepository extends MongoRepository<RefreshToken> implemen
 
 		return refreshTokenDocument
 			? RefreshToken.fromPrimitives({
-					dateAdd: refreshTokenDocument.dateAdd,
-					dateExp: refreshTokenDocument.dateExp,
-					isActive: refreshTokenDocument.isActive,
-					jwt: refreshTokenDocument.jwt,
-					tokenId: refreshTokenDocument.tokenId,
-					userId: refreshTokenDocument.userId,
-					userIP: refreshTokenDocument.userIP,
-					userAgent: refreshTokenDocument.userAgent
-				})
+        dateAdd: refreshTokenDocument.dateAdd,
+        dateExp: refreshTokenDocument.dateExp,
+        isActive: refreshTokenDocument.isActive,
+        jwt: refreshTokenDocument.jwt,
+        clientId: refreshTokenDocument.clientId,
+        userId: refreshTokenDocument.userId,
+        userIP: refreshTokenDocument.userIP,
+        userAgent: refreshTokenDocument.userAgent,
+        dateUpd: refreshTokenDocument.dateUpd,
+      })
 			: null;
 	}
 

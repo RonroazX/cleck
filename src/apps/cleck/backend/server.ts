@@ -13,6 +13,7 @@ import { ConflictError } from '../../../Contexts/Shared/infrastructure/Errors/Co
 import { ForbiddenError } from '../../../Contexts/Shared/infrastructure/Errors/ForbiddenError';
 import { UnauthorizedError } from '../../../Contexts/Shared/infrastructure/Errors/UnauthorizedError';
 import { registerRoutes } from './routes';
+import { BadRequestError } from '../../../Contexts/Shared/infrastructure/Errors/BadRequestError';
 
 export class Server {
 	private readonly express: express.Express;
@@ -50,6 +51,9 @@ export class Server {
 			if (err instanceof ForbiddenError) {
 				return res.status(httpStatus.FORBIDDEN).send({ message: err.message });
 			}
+      if (err instanceof BadRequestError) {
+        return res.status(httpStatus.BAD_REQUEST).send({message: err.message});
+      }
 			res.status(httpStatus.INTERNAL_SERVER_ERROR).send();
 		});
 	}

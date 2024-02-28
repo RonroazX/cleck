@@ -9,4 +9,6 @@ export interface TokenRepository {
 	revokeTokenByRefreshToken(refreshToken: string): Promise<void>;
 
 	searchTokenByRefreshToken(refreshToken: string): Promise<Nullable<RefreshToken>>;
+
+  updateToken(oldRefreshToken: string, newRefreshToken: string, dateUpd: Date): Promise<void>;
 }

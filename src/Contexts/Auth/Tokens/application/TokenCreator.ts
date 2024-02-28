@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { v4 as uuidv4 } from 'uuid';
 
-import { TokenId } from '../../Shared/domain/Users/TokenId';
+import { ClientId } from '../../Shared/domain/Users/TokenId';
 import { UserId } from '../../Shared/domain/Users/UserId';
 import { UserIP } from '../../Shared/domain/Users/UserIP';
 import { UserAgent } from '../../Users/domain/UserAgent';
@@ -16,7 +16,7 @@ export class TokenCreator {
 			throw new Error('ACCESS_TOKEN_SECRET is not defined');
 		}
 
-		return jwt.sign(payload, tokenSecret, { expiresIn: '30s' });
+		return jwt.sign(payload, tokenSecret, { expiresIn: '5m' });
 	}
 
 	static createJwtRefreshToken(payload: object): string {
@@ -37,8 +37,9 @@ export class TokenCreator {
 			isActive: request.isActive,
 			dateAdd: currentDate,
 			dateExp: expDate,
+      dateUpd: currentDate,
 			jwt: new JWT(request.jwt),
-			tokenId: new TokenId(uuidv4()),
+			clientId: new ClientId(uuidv4()),
 			userAgent: new UserAgent(request.userAgent),
 			userId: new UserId(request.userId),
 			userIP: new UserIP(request.userIP)

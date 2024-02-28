@@ -1,11 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
-import { getClientIp } from 'request-ip';
-
 import { RefreshTokenService } from '../../../../Contexts/Auth/Tokens/application/RefreshTokenService';
 import { TokenCreator } from '../../../../Contexts/Auth/Tokens/application/TokenCreator';
 import { UserValidator } from '../../../../Contexts/Auth/Users/application/UserValidator';
 import { UserRepository } from '../../../../Contexts/Auth/Users/domain/UserRepository';
 import { Controller } from './Controller';
+import { BadRequestError } from '../../../../Contexts/Shared/infrastructure/Errors/BadRequestError';
 
 type LoginPostRequest = Request & {
 	body: {
@@ -36,10 +35,15 @@ export class LoginPostController implements Controller {
 	async run(req: LoginPostRequest, res: Response, next: NextFunction): Promise<void> {
 		try {
 			const cookies: Cookies = req.cookies;
-			const userAgent = req.headers['user-agent'] ?? 'tango';
-			const ip = getClientIp(req);
+			const userAgent = req.headers['user-agent'];
+      const clientId = req.headers['client-id'];
+			//const ip = getClientIp(req);
 			const { email, password } = req.body;
-			console.log(ip);
+
+      if (!userAgent || !clientId) {
+        next(new BadRequestError('Bad Request'));
+        return;
+      }
 
 			const foundUser = await this.userValidator.run({ email, password });
 
@@ -75,7 +79,7 @@ export class LoginPostController implements Controller {
 				sameSite: 'strict',
 				maxAge: 24 * 60 * 60 * 1000
 			});
-			res.json({ accessToken });
+			res.json({ accessToken, 'clientId': newRefreshToken.clientId.value });
 		} catch (e) {
 			next(e);
 		}

@@ -7,6 +7,7 @@ import { UserValidator } from '../../../../Contexts/Auth/Users/application/UserV
 import { ForbiddenError } from '../../../../Contexts/Shared/infrastructure/Errors/ForbiddenError';
 import { UnauthorizedError } from '../../../../Contexts/Shared/infrastructure/Errors/UnauthorizedError';
 import { Controller } from './Controller';
+import { BadRequestError } from '../../../../Contexts/Shared/infrastructure/Errors/BadRequestError';
 
 export class RefreshPostController implements Controller {
 	private readonly refreshTokenService: RefreshTokenService;
@@ -18,7 +19,8 @@ export class RefreshPostController implements Controller {
 
 	async run(req: Request, res: Response, next: NextFunction): Promise<void> {
 		const cookies: { refreshToken: string } = req.cookies;
-		const userAgent = req.headers['user-agent'] ?? 'tango';
+		const userAgent = req.headers['user-agent'];
+    const clientId = req.headers['client-id'];
 		//const ip = req.ip ?? '';
 
 		if (!cookies.refreshToken) {
@@ -26,6 +28,11 @@ export class RefreshPostController implements Controller {
 
 			return;
 		}
+
+    if (!userAgent || !clientId) {
+      next(new BadRequestError('Bad Request'))
+      return;
+    }
 
 		const refreshToken = cookies.refreshToken;
 
@@ -50,7 +57,8 @@ export class RefreshPostController implements Controller {
 		}
 
 		if (foundToken) {
-			await this.refreshTokenService.revokeTokenByRefreshToken(refreshToken);
+      // no hace falta ya que ahora no se queda ese token como entidad, se sustituye por el siguiente
+			//await this.refreshTokenService.revokeTokenByRefreshToken(refreshToken);
 			try {
 				const decoded: { id: string; username: string; email: string } = TokenValidator.verify(
 					refreshToken,
@@ -59,14 +67,7 @@ export class RefreshPostController implements Controller {
 				const payload = { id: decoded.id, username: decoded.username, email: decoded.email };
 				const accessToken = TokenCreator.createJwtAccessToken(payload);
 				const newJWTRefreshToken = TokenCreator.createJwtRefreshToken(payload);
-				const newRefreshToken = TokenCreator.createRefreshToken({
-					userId: decoded.id,
-					isActive: true,
-					jwt: newJWTRefreshToken,
-					userAgent,
-					userIP: '192.168.1.1' //todo: cambiar por la variable ip
-				});
-				await this.refreshTokenService.saveRefreshToken(newRefreshToken);
+				await this.refreshTokenService.updateToken(refreshToken, newJWTRefreshToken, new Date(Date.now()));
 				res.cookie('refreshToken', newJWTRefreshToken, {
 					httpOnly: true,
 					secure: true,
