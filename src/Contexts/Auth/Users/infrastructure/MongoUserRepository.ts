@@ -31,24 +31,6 @@ export class MongoUserRepository extends MongoRepository<User> implements UserRe
 			: null;
 	}
 
-	async searchUserByToken(token: string): Promise<Nullable<User>> {
-		const collection = await this.collection();
-
-		const userDocument = await collection.findOne<UserDocument>({
-			refreshTokens: { $in: [token] }
-		});
-
-		return userDocument
-			? User.fromPrimitives({
-					id: userDocument._id,
-					email: userDocument.email,
-					password: userDocument.password,
-					username: userDocument.username,
-					refreshTokens: userDocument.refreshTokens
-				})
-			: null;
-	}
-
 	async save(user: User): Promise<void> {
 		await this.persist(user.id.value, user);
 	}
