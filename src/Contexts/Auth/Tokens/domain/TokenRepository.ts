@@ -10,8 +10,7 @@ export interface TokenRepository {
 
 	searchTokenByRefreshToken(refreshToken: string): Promise<Nullable<RefreshToken>>;
 
-  searchTokenByClientId(clientId: string): Promise<Nullable<RefreshToken>>
+	searchTokenByClientId(clientId: string): Promise<Nullable<RefreshToken>>;
 
-  updateToken(tokenId: string, newRefreshToken: string, dateUpd: Date): Promise<void>;
-
+	updateToken(tokenId: string, newRefreshToken: string, dateUpd: Date): Promise<void>;
 }

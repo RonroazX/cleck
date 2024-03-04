@@ -4,10 +4,10 @@ import { RefreshTokenService } from '../../../../Contexts/Auth/Tokens/applicatio
 import { TokenCreator } from '../../../../Contexts/Auth/Tokens/application/TokenCreator';
 import { TokenValidator } from '../../../../Contexts/Auth/Tokens/application/TokenValidator';
 import { UserValidator } from '../../../../Contexts/Auth/Users/application/UserValidator';
+import { BadRequestError } from '../../../../Contexts/Shared/infrastructure/Errors/BadRequestError';
 import { ForbiddenError } from '../../../../Contexts/Shared/infrastructure/Errors/ForbiddenError';
 import { UnauthorizedError } from '../../../../Contexts/Shared/infrastructure/Errors/UnauthorizedError';
 import { Controller } from './Controller';
-import { BadRequestError } from '../../../../Contexts/Shared/infrastructure/Errors/BadRequestError';
 
 export class RefreshPostController implements Controller {
 	private readonly refreshTokenService: RefreshTokenService;
@@ -20,7 +20,7 @@ export class RefreshPostController implements Controller {
 	async run(req: Request, res: Response, next: NextFunction): Promise<void> {
 		const cookies: { refreshToken: string } = req.cookies;
 		const userAgent = req.headers['user-agent'];
-    //const clientId = req.headers['client-id'];
+		//const clientId = req.headers['client-id'];
 		//const ip = req.ip ?? '';
 
 		if (!cookies.refreshToken) {
@@ -29,10 +29,11 @@ export class RefreshPostController implements Controller {
 			return;
 		}
 
-    if (!userAgent) {
-      next(new BadRequestError('Bad Request'))
-      return;
-    }
+		if (!userAgent) {
+			next(new BadRequestError('Bad Request'));
+
+			return;
+		}
 
 		const refreshToken = cookies.refreshToken;
 
@@ -57,7 +58,7 @@ export class RefreshPostController implements Controller {
 		}
 
 		if (foundToken) {
-      // no hace falta ya que ahora no se queda ese token como entidad, se sustituye por el siguiente
+			// no hace falta ya que ahora no se queda ese token como entidad, se sustituye por el siguiente
 			//await this.refreshTokenService.revokeTokenByRefreshToken(refreshToken);
 			try {
 				const decoded: { id: string; username: string; email: string } = TokenValidator.verify(
@@ -67,7 +68,11 @@ export class RefreshPostController implements Controller {
 				const payload = { id: decoded.id, username: decoded.username, email: decoded.email };
 				const accessToken = TokenCreator.createJwtAccessToken(payload);
 				const newJWTRefreshToken = TokenCreator.createJwtRefreshToken(payload);
-				await this.refreshTokenService.updateToken(foundToken.clientId.value, newJWTRefreshToken, new Date(Date.now()));
+				await this.refreshTokenService.updateToken(
+					foundToken.clientId.value,
+					newJWTRefreshToken,
+					new Date(Date.now())
+				);
 				res.cookie('refreshToken', newJWTRefreshToken, {
 					httpOnly: true,
 					secure: true,

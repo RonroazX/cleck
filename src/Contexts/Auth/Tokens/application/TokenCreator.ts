@@ -37,7 +37,7 @@ export class TokenCreator {
 			isActive: request.isActive,
 			dateAdd: currentDate,
 			dateExp: expDate,
-      dateUpd: currentDate,
+			dateUpd: currentDate,
 			jwt: new JWT(request.jwt),
 			clientId: new ClientId(uuidv4()),
 			userAgent: new UserAgent(request.userAgent),

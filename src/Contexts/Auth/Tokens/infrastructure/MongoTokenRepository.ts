@@ -1,4 +1,5 @@
 import { ObjectId } from 'bson';
+
 import { Nullable } from '../../../Shared/domain/Nullable';
 import { MongoRepository } from '../../../Shared/infrastructure/persistance/mongo/MongoRepository';
 import { RefreshToken } from '../domain/RefreshToken';
@@ -8,7 +9,7 @@ interface TokenDocument {
 	_id: string;
 	dateAdd: Date;
 	dateExp: Date;
-  dateUpd: Date;
+	dateUpd: Date;
 	isActive: boolean;
 	jwt: string;
 	clientId: string;
@@ -21,10 +22,13 @@ interface TokenDocument {
 }
 
 export class MongoTokenRepository extends MongoRepository<RefreshToken> implements TokenRepository {
-  async updateToken(tokenId: string, newRefreshToken: string, dateUpd: Date): Promise<void> {
-    const collection = await this.collection();
-		await collection.updateOne({ _id: tokenId as unknown as ObjectId}, { $set: { jwt: newRefreshToken, dateUpd:  dateUpd} });
-  }
+	async updateToken(tokenId: string, newRefreshToken: string, dateUpd: Date): Promise<void> {
+		const collection = await this.collection();
+		await collection.updateOne(
+			{ _id: tokenId as unknown as ObjectId },
+			{ $set: { jwt: newRefreshToken, dateUpd } }
+		);
+	}
 
 	async revokeTokenByRefreshToken(refreshToken: string): Promise<void> {
 		const collection = await this.collection();
@@ -49,37 +53,39 @@ export class MongoTokenRepository extends MongoRepository<RefreshToken> implemen
 
 		return tokenDocument
 			? RefreshToken.fromPrimitives({
-        dateAdd: tokenDocument.dateAdd,
-        dateExp: tokenDocument.dateExp,
-        isActive: tokenDocument.isActive,
-        jwt: tokenDocument.jwt,
-        clientId: tokenDocument.clientId,
-        userId: tokenDocument.userId,
-        userIP: tokenDocument.userIP,
-        userAgent: tokenDocument.userAgent,
-        dateUpd: tokenDocument.dateUpd,
-      })
+					dateAdd: tokenDocument.dateAdd,
+					dateExp: tokenDocument.dateExp,
+					isActive: tokenDocument.isActive,
+					jwt: tokenDocument.jwt,
+					clientId: tokenDocument.clientId,
+					userId: tokenDocument.userId,
+					userIP: tokenDocument.userIP,
+					userAgent: tokenDocument.userAgent,
+					dateUpd: tokenDocument.dateUpd
+				})
 			: null;
 	}
 
-  async searchTokenByClientId(clientId: string): Promise<Nullable<RefreshToken>> {
-    const collection = await this.collection();
-    const tokenDocument = await collection.findOne<TokenDocument>({
-      clientId: clientId
-    });
+	async searchTokenByClientId(clientId: string): Promise<Nullable<RefreshToken>> {
+		const collection = await this.collection();
+		const tokenDocument = await collection.findOne<TokenDocument>({
+			clientId
+		});
 
-    return tokenDocument ? RefreshToken.fromPrimitives({
-      dateAdd: tokenDocument.dateAdd,
-      dateExp: tokenDocument.dateExp,
-      isActive: tokenDocument.isActive,
-      jwt: tokenDocument.jwt,
-      clientId: tokenDocument.clientId,
-      userId: tokenDocument.userId,
-      userIP: tokenDocument.userIP,
-      userAgent: tokenDocument.userAgent,
-      dateUpd: tokenDocument.dateUpd,
-    }) : null;
-  }
+		return tokenDocument
+			? RefreshToken.fromPrimitives({
+					dateAdd: tokenDocument.dateAdd,
+					dateExp: tokenDocument.dateExp,
+					isActive: tokenDocument.isActive,
+					jwt: tokenDocument.jwt,
+					clientId: tokenDocument.clientId,
+					userId: tokenDocument.userId,
+					userIP: tokenDocument.userIP,
+					userAgent: tokenDocument.userAgent,
+					dateUpd: tokenDocument.dateUpd
+				})
+			: null;
+	}
 
 	protected collectionName(): string {
 		return 'refreshTokens';

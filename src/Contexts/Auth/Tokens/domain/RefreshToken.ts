@@ -10,7 +10,7 @@ export interface RefreshTokenParams {
 	userAgent: UserAgent;
 	dateAdd: Date;
 	dateExp: Date;
-  dateUpd: Date;
+	dateUpd: Date;
 	userId: UserId;
 	clientId: ClientId;
 	userIP: UserIP;
@@ -21,7 +21,7 @@ export class RefreshToken extends AggregateRoot {
 	readonly isActive: boolean;
 	readonly userAgent: UserAgent;
 	readonly dateAdd: Date;
-  readonly dateUpd: Date;
+	readonly dateUpd: Date;
 	readonly dateExp: Date;
 	readonly userId: UserId;
 	readonly userIP: UserIP;
@@ -33,7 +33,7 @@ export class RefreshToken extends AggregateRoot {
 		userAgent,
 		dateAdd,
 		dateExp,
-    dateUpd,
+		dateUpd,
 		userId,
 		clientId,
 		userIP,
@@ -44,7 +44,7 @@ export class RefreshToken extends AggregateRoot {
 		this.userAgent = userAgent;
 		this.dateAdd = dateAdd;
 		this.dateExp = dateExp;
-    this.dateUpd = dateUpd;
+		this.dateUpd = dateUpd;
 		this.userId = userId;
 		this.clientId = clientId;
 		this.jwt = jwt;
@@ -59,7 +59,7 @@ export class RefreshToken extends AggregateRoot {
 		};
 		dateAdd: Date;
 		dateExp: Date;
-    dateUpd: Date;
+		dateUpd: Date;
 		userId: string;
 		clientId: string;
 		userIP: string;
@@ -69,7 +69,7 @@ export class RefreshToken extends AggregateRoot {
 			isActive: plainData.isActive,
 			userAgent: new UserAgent(plainData.userAgent.userAgent),
 			dateAdd: plainData.dateAdd,
-      dateUpd: plainData.dateUpd,
+			dateUpd: plainData.dateUpd,
 			dateExp: plainData.dateExp,
 			jwt: new JWT(plainData.jwt),
 			userId: new UserId(plainData.userId),
