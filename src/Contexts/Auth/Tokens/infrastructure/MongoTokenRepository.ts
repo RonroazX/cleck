@@ -23,7 +23,7 @@ interface TokenDocument {
 export class MongoTokenRepository extends MongoRepository<RefreshToken> implements TokenRepository {
   async updateToken(tokenId: string, newRefreshToken: string, dateUpd: Date): Promise<void> {
     const collection = await this.collection();
-		await collection.updateOne({ _id: tokenId as unknown as ObjectId}, { $set: { jwt: newRefreshToken, dateUpd:  dateUpd} }).then((value) => console.log('los modificados son: ', value.modifiedCount));
+		await collection.updateOne({ _id: tokenId as unknown as ObjectId}, { $set: { jwt: newRefreshToken, dateUpd:  dateUpd} });
   }
 
 	async revokeTokenByRefreshToken(refreshToken: string): Promise<void> {

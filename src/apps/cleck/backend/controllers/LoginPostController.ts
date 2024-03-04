@@ -4,6 +4,7 @@ import { TokenCreator } from '../../../../Contexts/Auth/Tokens/application/Token
 import { UserValidator } from '../../../../Contexts/Auth/Users/application/UserValidator';
 import { Controller } from './Controller';
 import { BadRequestError } from '../../../../Contexts/Shared/infrastructure/Errors/BadRequestError';
+import { ForbiddenError } from '../../../../Contexts/Shared/infrastructure/Errors/ForbiddenError';
 
 type LoginPostRequest = Request & {
   body: {
@@ -66,16 +67,13 @@ export class LoginPostController implements Controller {
       });
 
       if (clientId) {
-        console.log(clientId);
         const foundTokenWithClientId = await this.refreshTokenService.searchTokenByClientId(clientId);
-        if (foundTokenWithClientId) {
-          await this.refreshTokenService.updateToken(
-            foundTokenWithClientId.clientId.value,
-            newJWTRefreshToken,
-            new Date(Date.now())
-            );
+        if (!foundTokenWithClientId) {
+          next(new ForbiddenError('Forbidden'));
+          return;
         }
-        res.json({ accessToken, clientId });
+        await this.refreshTokenService.updateToken(foundTokenWithClientId.clientId.value, newJWTRefreshToken, new Date(Date.now()));
+        res.json({ accessToken, clientId: foundTokenWithClientId?.clientId.value });
       } else {
         const newRefreshToken = TokenCreator.createRefreshToken({
           userId: foundUser.id.value,
