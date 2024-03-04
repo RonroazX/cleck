@@ -20,7 +20,7 @@ export class RefreshPostController implements Controller {
 	async run(req: Request, res: Response, next: NextFunction): Promise<void> {
 		const cookies: { refreshToken: string } = req.cookies;
 		const userAgent = req.headers['user-agent'];
-		//const clientId = req.headers['client-id'];
+		const clientId = req.headers['client-id'] as string;
 		//const ip = req.ip ?? '';
 
 		if (!cookies.refreshToken) {
@@ -61,6 +61,9 @@ export class RefreshPostController implements Controller {
 			// no hace falta ya que ahora no se queda ese token como entidad, se sustituye por el siguiente
 			//await this.refreshTokenService.revokeTokenByRefreshToken(refreshToken);
 			try {
+        if (!foundToken.clientId.isEqual(clientId)) {
+          throw new Error();
+        };
 				const decoded: { id: string; username: string; email: string } = TokenValidator.verify(
 					refreshToken,
 					'refreshToken'
