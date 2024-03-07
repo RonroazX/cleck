@@ -8,24 +8,15 @@ import { UserAgent } from '../../Users/domain/UserAgent';
 import { JWT } from '../domain/JWT';
 import { RefreshToken } from '../domain/RefreshToken';
 import { TokenCreatorRequest } from './TokenCreatorRequest';
+import { AUTH } from '../../Shared/utils/constants';
 
 export class TokenCreator {
 	static createJwtAccessToken(payload: object): string {
-		const tokenSecret = process.env.ACCESS_TOKEN_SECRET;
-		if (!tokenSecret) {
-			throw new Error('ACCESS_TOKEN_SECRET is not defined');
-		}
-
-		return jwt.sign(payload, tokenSecret, { expiresIn: '5m' });
+		return jwt.sign(payload, AUTH.accessTokenSecret, { expiresIn: AUTH.accessTokenExp });
 	}
 
 	static createJwtRefreshToken(payload: object): string {
-		const tokenSecret = process.env.REFRESH_TOKEN_SECRET;
-		if (!tokenSecret) {
-			throw new Error('REFRESH_TOKEN_SECRET is not defined');
-		}
-
-		return jwt.sign(payload, tokenSecret, { expiresIn: '1d' });
+		return jwt.sign(payload, AUTH.refreshTokenSecret, { expiresIn: AUTH.refreshTokenExp });
 	}
 
 	static createRefreshToken(request: TokenCreatorRequest): RefreshToken {

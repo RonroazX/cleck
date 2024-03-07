@@ -1,7 +1,18 @@
-const AMConstants = {
-	MIN_PASSWORD_LENGTH: 8,
-	MIN_USERNAME_LENGTH: 5,
-	MAX_USERNAME_LENGTH: 35
+const USER = {
+	minPasswordLength: 8,
+	minUsernameLength: 5,
+	maxUsernameLength: 35
 };
 
-export default AMConstants;
+const AUTH = {
+  accessTokenExp: process.env.ACCESSS_TOKEN_EXPIRATION || '5m',
+  refreshTokenExp: process.env.REFRESH_TOKEN_EXPIRATION || '1d',
+  accessTokenSecret: process.env.ACCESS_TOKEN_SECRET || 'secure_key',
+  refreshTokenSecret: process.env.REFRESH_TOKEN_SECRET || 'secure_key'
+}
+
+
+export {
+  USER,
+  AUTH
+};

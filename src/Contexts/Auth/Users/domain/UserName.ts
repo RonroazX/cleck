@@ -1,6 +1,6 @@
 import { InvalidArgumentError } from '../../../Shared/domain/value-object/InvalidArgumentError';
 import { StringValueObject } from '../../../Shared/domain/value-object/StringValueObject';
-import AMConstants from '../../Shared/utils/constants';
+import {USER} from '../../Shared/utils/constants';
 
 export class UserName extends StringValueObject {
 	constructor(value: string) {
@@ -18,7 +18,7 @@ export class UserName extends StringValueObject {
 
 	private validate(username: string): boolean {
 		const usernameRegex = new RegExp(
-			`^(?=.{${AMConstants.MIN_USERNAME_LENGTH},${AMConstants.MAX_USERNAME_LENGTH}}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9_]+(?<![_.])$`
+			`^(?=.{${USER.minUsernameLength},${USER.maxUsernameLength}}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9_]+(?<![_.])$`
 		);
 		if (username.match(usernameRegex)) {
 			return true;

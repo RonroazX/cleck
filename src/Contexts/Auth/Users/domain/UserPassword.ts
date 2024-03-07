@@ -1,5 +1,5 @@
 import { StringValueObject } from '../../../Shared/domain/value-object/StringValueObject';
-import AMConstants from '../../Shared/utils/constants';
+import { USER } from '../../Shared/utils/constants';
 import { HashUserPasswordService } from '../application/HashUserPassword';
 import { UserHashedPassword } from './UserHashedPassword';
 import { UserPasswordNotValid } from './UserPasswordNotValid';
@@ -20,7 +20,7 @@ export class UserPassword extends StringValueObject {
 
 	private static validate(password: string): boolean {
 		const passwordRegex = new RegExp(
-			`^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{${AMConstants.MIN_PASSWORD_LENGTH},}$`
+			`^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{${USER.minPasswordLength},}$`
 		);
 		if (password.match(passwordRegex)) {
 			return true;

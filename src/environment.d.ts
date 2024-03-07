@@ -5,6 +5,8 @@ declare global {
 			PORT?: string;
 			ACCESS_TOKEN_SECRET: string;
 			REFRESH_TOKEN_SECRET: string;
+      ACCESSS_TOKEN_EXPIRATION: string;
+      REFRESH_TOKEN_EXPIRATION: string;
 		}
 	}
 }
