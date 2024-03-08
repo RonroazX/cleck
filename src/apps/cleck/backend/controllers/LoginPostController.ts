@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Response } from 'express';
 
 import { RefreshTokenService } from '../../../../Contexts/Auth/Tokens/application/RefreshTokenService';
 import { TokenCreator } from '../../../../Contexts/Auth/Tokens/application/TokenCreator';
@@ -6,17 +6,7 @@ import { UserValidator } from '../../../../Contexts/Auth/Users/application/UserV
 import { BadRequestError } from '../../../../Contexts/Shared/infrastructure/Errors/BadRequestError';
 import { ForbiddenError } from '../../../../Contexts/Shared/infrastructure/Errors/ForbiddenError';
 import { Controller } from './Controller';
-
-type LoginPostRequest = Request & {
-	body: {
-		email: string;
-		password: string;
-	};
-};
-
-type Cookies = {
-	refreshToken?: string;
-};
+import { AuthRequest } from '../middlewares/authMiddlewares';
 
 export class LoginPostController implements Controller {
 	private readonly userValidator: UserValidator;
@@ -27,19 +17,9 @@ export class LoginPostController implements Controller {
 		this.refreshTokenService = opts.refreshTokenService;
 	}
 
-	async run(req: LoginPostRequest, res: Response, next: NextFunction): Promise<void> {
+	async run(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
 		try {
-			const cookies: Cookies = req.cookies;
-			const userAgent = req.headers['user-agent'];
-			const clientId = req.headers['client-id'] as string;
-			//const ip = getClientIp(req);
 			const { email, password } = req.body;
-
-			if (!userAgent) {
-				next(new BadRequestError('Bad Request'));
-
-				return;
-			}
 
 			const foundUser = await this.userValidator.run({ email, password });
 

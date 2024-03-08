@@ -14,6 +14,7 @@ import { ConflictError } from '../../../Contexts/Shared/infrastructure/Errors/Co
 import { ForbiddenError } from '../../../Contexts/Shared/infrastructure/Errors/ForbiddenError';
 import { UnauthorizedError } from '../../../Contexts/Shared/infrastructure/Errors/UnauthorizedError';
 import { registerRoutes } from './routes';
+import { clientInfo } from './middlewares/authMiddlewares';
 
 export class Server {
 	private readonly express: express.Express;
@@ -36,6 +37,7 @@ export class Server {
 		this.express.use(helmet.hidePoweredBy());
 		this.express.use(helmet.frameguard({ action: 'deny' }));
 		this.express.use(compress());
+    this.express.use(clientInfo);
 		const router = Router();
 		router.use(errorHandler());
 		this.express.use(router);

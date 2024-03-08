@@ -9,7 +9,6 @@ interface UserParams {
 	username: UserName;
 	email: UserEmail;
 	password: UserHashedPassword;
-	refreshTokens: string[];
 }
 
 export class User extends AggregateRoot {
@@ -18,7 +17,7 @@ export class User extends AggregateRoot {
 	readonly email: UserEmail;
 	readonly password: UserHashedPassword;
 
-	constructor({ id, username, email, password, refreshTokens }: UserParams) {
+	constructor({ id, username, email, password }: UserParams) {
 		super();
 		this.id = id;
 		this.username = username;
@@ -38,7 +37,6 @@ export class User extends AggregateRoot {
 			email: new UserEmail(plainData.email),
 			password: new UserHashedPassword(plainData.password),
 			username: new UserName(plainData.username),
-			refreshTokens: plainData.refreshTokens
 		});
 	}
 
