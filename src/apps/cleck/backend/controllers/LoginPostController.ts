@@ -1,12 +1,11 @@
 import { NextFunction, Response } from 'express';
 
-import { RefreshTokenService } from '../../../../Contexts/Auth/Tokens/application/RefreshTokenService';
-import { TokenCreator } from '../../../../Contexts/Auth/Tokens/application/TokenCreator';
-import { UserValidator } from '../../../../Contexts/Auth/Users/application/UserValidator';
-import { BadRequestError } from '../../../../Contexts/Shared/infrastructure/Errors/BadRequestError';
+import { RefreshTokenService } from '../../../../Contexts/UserManagement/Tokens/application/RefreshTokenService';
+import { TokenCreator } from '../../../../Contexts/UserManagement/Tokens/application/TokenCreator';
+import { UserValidator } from '../../../../Contexts/UserManagement/Users/application/UserUserManagement';
 import { ForbiddenError } from '../../../../Contexts/Shared/infrastructure/Errors/ForbiddenError';
 import { Controller } from './Controller';
-import { AuthRequest } from '../middlewares/authMiddlewares';
+import { IAuthRequest } from '../middlewares/authMiddlewares';
 
 export class LoginPostController implements Controller {
 	private readonly userValidator: UserValidator;
@@ -17,7 +16,7 @@ export class LoginPostController implements Controller {
 		this.refreshTokenService = opts.refreshTokenService;
 	}
 
-	async run(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
+	async run(req: IAuthRequest, res: Response, next: NextFunction): Promise<void> {
 		try {
 			const { email, password } = req.body;
 

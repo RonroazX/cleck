@@ -1,10 +1,8 @@
-import { Nullable } from '../../../Shared/domain/Nullable';
 import { User } from '../domain/User';
 import { UserEmail } from '../domain/UserEmail';
 import { UserNotFound } from '../domain/UserNotFound';
 import { UserRepository } from '../domain/UserRepository';
 import { PasswordValidator } from './PasswordValidator';
-import { UserValidateRequest } from './UserValidateRequest';
 
 export class UserValidator {
 	private readonly userRepository: UserRepository;
@@ -15,8 +13,7 @@ export class UserValidator {
 		this.passwordValidator = opts.passwordValidator;
 	}
 
-	async run(request: UserValidateRequest): Promise<User> {
-		const { email, password } = request;
+	async run({email, password}: {email: string; password: string}): Promise<User> {
 
 		const user = await this.userRepository.searchUserByEmail(new UserEmail(email));
 
@@ -31,9 +28,5 @@ export class UserValidator {
 		}
 
 		return user;
-	}
-
-	async getUserByEmail(email: string): Promise<Nullable<User>> {
-		return this.userRepository.searchUserByEmail(new UserEmail(email));
 	}
 }

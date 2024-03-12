@@ -1,18 +1,8 @@
-import { NextFunction, Request, Response } from "express";
-
-export interface IClientInfo {
-  id?: string;
-  host?: string;
-  agent: string;
-  refreshToken?: string;
-}
-
-export type AuthRequest = Request & {
-  client?: IClientInfo;
-}
+import { NextFunction, Response } from "express";
+import { IAuthRequest } from "./authTypes";
 
 export const clientInfo = (
-  req: AuthRequest,
+  req: IAuthRequest,
   res: Response,
   next: NextFunction
 ) => {

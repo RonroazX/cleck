@@ -1,4 +1,4 @@
-import { UserEmail } from '../../../../../src/Contexts/Auth/Users/domain/UserEmail';
+import { UserEmail } from '../../../../../src/Contexts/UserManagement/Users/domain/UserEmail';
 import { EmailMother } from '../../../Shared/domain/EmailMother';
 
 export class UserEmailMother {

@@ -1,5 +1,5 @@
 import container from '../../../../../../src/apps/cleck/backend/dependency-injection/configureContainer';
-import { UserRepository } from '../../../../../../src/Contexts/Auth/Users/domain/UserRepository';
+import { UserRepository } from '../../../../../../src/Contexts/UserManagement/Users/domain/UserRepository';
 import { EnvironmentArranger } from '../../../../Shared/infrastructure/arranger/EnvironmentArranger';
 import { UserMother } from '../../domain/UserMother';
 

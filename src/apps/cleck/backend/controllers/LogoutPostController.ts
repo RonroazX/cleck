@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import httpStatus from 'http-status';
 
-import { RefreshTokenService } from '../../../../Contexts/Auth/Tokens/application/RefreshTokenService';
+import { RefreshTokenService } from '../../../../Contexts/UserManagement/Tokens/application/RefreshTokenService';
 import { Controller } from './Controller';
 
 export class LogoutPostController implements Controller {

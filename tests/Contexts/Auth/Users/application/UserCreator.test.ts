@@ -1,6 +1,6 @@
-import { UserCreator } from '../../../../../src/Contexts/Auth/Users/application/UserCreator';
-import { UserEmailAlreadyRegistered } from '../../../../../src/Contexts/Auth/Users/domain/UserEmailAlreadyRegistered';
-import { UserPasswordNotValid } from '../../../../../src/Contexts/Auth/Users/domain/UserPasswordNotValid';
+import { UserCreator } from '../../../../../src/Contexts/UserManagement/Users/application/UserCreator';
+import { UserEmailAlreadyRegistered } from '../../../../../src/Contexts/UserManagement/Users/domain/UserEmailAlreadyRegistered';
+import { UserPasswordNotValid } from '../../../../../src/Contexts/UserManagement/Users/domain/UserPasswordNotValid';
 import { HashServiceMock } from '../__mocks__/HashServiceMock';
 import { UserEmailExistanceCheckerMock } from '../__mocks__/UserEmailExistanceCheckerMock';
 import { UserRepositoryMock } from '../__mocks__/UserRepositoryMock';

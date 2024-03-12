@@ -1,4 +1,4 @@
-import { UserName } from '../../../../../src/Contexts/Auth/Users/domain/UserName';
+import { UserName } from '../../../../../src/Contexts/UserManagement/Users/domain/UserName';
 import { WordMother } from '../../../Shared/domain/WordMother';
 
 export class UserNameMother {

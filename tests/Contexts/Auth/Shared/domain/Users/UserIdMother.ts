@@ -1,4 +1,4 @@
-import { UserId } from '../../../../../../src/Contexts/Auth/Shared/domain/Users/UserId';
+import { UserId } from '../../../../../../src/Contexts/UserManagement/Shared/domain/Users/UserId';
 import { UuidMother } from '../../../../Shared/domain/UuidMother';
 
 export class UserIdMother {

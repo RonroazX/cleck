@@ -1,7 +1,7 @@
-import { UserEmailExistanceChecker } from '../../../../../src/Contexts/Auth/Users/application/UserEmailExistanceChecker';
-import { UserEmail } from '../../../../../src/Contexts/Auth/Users/domain/UserEmail';
-import { UserEmailAlreadyRegistered } from '../../../../../src/Contexts/Auth/Users/domain/UserEmailAlreadyRegistered';
-import { UserRepository } from '../../../../../src/Contexts/Auth/Users/domain/UserRepository';
+import { UserEmailExistanceChecker } from '../../../../../src/Contexts/UserManagement/Users/application/UserEmailExistanceChecker';
+import { UserEmail } from '../../../../../src/Contexts/UserManagement/Users/domain/UserEmail';
+import { UserEmailAlreadyRegistered } from '../../../../../src/Contexts/UserManagement/Users/domain/UserEmailAlreadyRegistered';
+import { UserRepository } from '../../../../../src/Contexts/UserManagement/Users/domain/UserRepository';
 
 export class UserEmailExistanceCheckerMock extends UserEmailExistanceChecker {
 	emailAlreadyRegistered: boolean;

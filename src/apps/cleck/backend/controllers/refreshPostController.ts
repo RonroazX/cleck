@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
 
-import { RefreshTokenService } from '../../../../Contexts/Auth/Tokens/application/RefreshTokenService';
-import { TokenCreator } from '../../../../Contexts/Auth/Tokens/application/TokenCreator';
-import { TokenValidator } from '../../../../Contexts/Auth/Tokens/application/TokenValidator';
-import { UserValidator } from '../../../../Contexts/Auth/Users/application/UserValidator';
+import { RefreshTokenService } from '../../../../Contexts/UserManagement/Tokens/application/RefreshTokenService';
+import { TokenCreator } from '../../../../Contexts/UserManagement/Tokens/application/TokenCreator';
+import { TokenValidator } from '../../../../Contexts/UserManagement/Tokens/application/TokenValidator';
+import { UserValidator } from '../../../../Contexts/UserManagement/Users/application/UserUserManagement';
 import { BadRequestError } from '../../../../Contexts/Shared/infrastructure/Errors/BadRequestError';
 import { ForbiddenError } from '../../../../Contexts/Shared/infrastructure/Errors/ForbiddenError';
 import { UnauthorizedError } from '../../../../Contexts/Shared/infrastructure/Errors/UnauthorizedError';

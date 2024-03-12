@@ -1,6 +1,6 @@
-import { HashUserPasswordService } from '../../../../../src/Contexts/Auth/Users/application/HashUserPassword';
-import { UserHashedPassword } from '../../../../../src/Contexts/Auth/Users/domain/UserHashedPassword';
-import { UserPassword } from '../../../../../src/Contexts/Auth/Users/domain/UserPassword';
+import { HashUserPasswordService } from '../../../../../src/Contexts/UserManagement/Users/application/HashUserPassword';
+import { UserHashedPassword } from '../../../../../src/Contexts/UserManagement/Users/domain/UserHashedPassword';
+import { UserPassword } from '../../../../../src/Contexts/UserManagement/Users/domain/UserPassword';
 import { PasswordMother } from '../../../Shared/domain/PasswordMother';
 
 export class UserPasswordMother {

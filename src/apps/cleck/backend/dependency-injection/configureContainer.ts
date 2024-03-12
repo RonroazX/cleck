@@ -1,16 +1,16 @@
 import * as awilix from 'awilix';
 
 import { MongoEnvironmentArranger } from '../../../../../tests/Contexts/Shared/infrastructure/mongo/MongoEnvironmentArranger';
-import { MongoConfigFactory } from '../../../../Contexts/Auth/Shared/infrastructure/persistance/mongo/MongoConfigFactory';
-import { RefreshTokenService } from '../../../../Contexts/Auth/Tokens/application/RefreshTokenService';
-import { TokenCreator } from '../../../../Contexts/Auth/Tokens/application/TokenCreator';
-import { MongoTokenRepository } from '../../../../Contexts/Auth/Tokens/infrastructure/MongoTokenRepository';
-import { HashUserPasswordService } from '../../../../Contexts/Auth/Users/application/HashUserPassword';
-import { PasswordValidator } from '../../../../Contexts/Auth/Users/application/PasswordValidator';
-import { UserCreator } from '../../../../Contexts/Auth/Users/application/UserCreator';
-import { UserEmailExistanceChecker } from '../../../../Contexts/Auth/Users/application/UserEmailExistanceChecker';
-import { UserValidator } from '../../../../Contexts/Auth/Users/application/UserValidator';
-import { MongoUserRepository } from '../../../../Contexts/Auth/Users/infrastructure/MongoUserRepository';
+import { MongoConfigFactory } from '../../../../Contexts/UserManagement/Shared/infrastructure/persistance/mongo/MongoConfigFactory';
+import { RefreshTokenService } from '../../../../Contexts/UserManagement/Tokens/application/RefreshTokenService';
+import { TokenCreator } from '../../../../Contexts/UserManagement/Tokens/application/TokenCreator';
+import { MongoTokenRepository } from '../../../../Contexts/UserManagement/Tokens/infrastructure/MongoTokenRepository';
+import { HashUserPasswordService } from '../../../../Contexts/UserManagement/Users/application/HashUserPassword';
+import { PasswordValidator } from '../../../../Contexts/UserManagement/Users/application/PasswordValidator';
+import { UserCreator } from '../../../../Contexts/UserManagement/Users/application/UserCreator';
+import { UserEmailExistanceChecker } from '../../../../Contexts/UserManagement/Users/application/UserEmailExistanceChecker';
+import { UserValidator } from '../../../../Contexts/UserManagement/Users/application/UserUserManagement';
+import { MongoUserRepository } from '../../../../Contexts/UserManagement/Users/infrastructure/MongoUserRepository';
 import { MongoClientFactory } from '../../../../Contexts/Shared/infrastructure/persistance/mongo/MongoClientFactory';
 import MongoConfig from '../../../../Contexts/Shared/infrastructure/persistance/mongo/MongoConfig';
 import { LoginPostController } from '../controllers/LoginPostController';

@@ -1,6 +1,6 @@
-import { User } from '../../../../../src/Contexts/Auth/Users/domain/User';
-import { UserEmail } from '../../../../../src/Contexts/Auth/Users/domain/UserEmail';
-import { UserRepository } from '../../../../../src/Contexts/Auth/Users/domain/UserRepository';
+import { User } from '../../../../../src/Contexts/UserManagement/Users/domain/User';
+import { UserEmail } from '../../../../../src/Contexts/UserManagement/Users/domain/UserEmail';
+import { UserRepository } from '../../../../../src/Contexts/UserManagement/Users/domain/UserRepository';
 import { Nullable } from '../../../../../src/Contexts/Shared/domain/Nullable';
 
 export class UserRepositoryMock implements UserRepository {

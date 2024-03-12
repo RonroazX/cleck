@@ -1,8 +1,8 @@
-import { UserId } from '../../../../../src/Contexts/Auth/Shared/domain/Users/UserId';
-import { UserCreatorRequest } from '../../../../../src/Contexts/Auth/Users/application/UserCreatorRequest';
-import { UserEmail } from '../../../../../src/Contexts/Auth/Users/domain/UserEmail';
-import { UserName } from '../../../../../src/Contexts/Auth/Users/domain/UserName';
-import { UserPassword } from '../../../../../src/Contexts/Auth/Users/domain/UserPassword';
+import { UserId } from '../../../../../src/Contexts/UserManagement/Shared/domain/Users/UserId';
+import { UserCreatorRequest } from '../../../../../src/Contexts/UserManagement/Users/application/UserCreatorRequest';
+import { UserEmail } from '../../../../../src/Contexts/UserManagement/Users/domain/UserEmail';
+import { UserName } from '../../../../../src/Contexts/UserManagement/Users/domain/UserName';
+import { UserPassword } from '../../../../../src/Contexts/UserManagement/Users/domain/UserPassword';
 import { UserIdMother } from '../../Shared/domain/Users/UserIdMother';
 import { UserEmailMother } from '../domain/UserEmailMother';
 import { UserNameMother } from '../domain/UserNameMother';

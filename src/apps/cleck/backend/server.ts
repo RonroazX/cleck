@@ -8,7 +8,7 @@ import helmet from 'helmet';
 import * as http from 'http';
 import httpStatus from 'http-status';
 
-import { UserNotFound } from '../../../Contexts/Auth/Users/domain/UserNotFound';
+import { UserNotFound } from '../../../Contexts/UserManagement/Users/domain/UserNotFound';
 import { BadRequestError } from '../../../Contexts/Shared/infrastructure/Errors/BadRequestError';
 import { ConflictError } from '../../../Contexts/Shared/infrastructure/Errors/ConflictError';
 import { ForbiddenError } from '../../../Contexts/Shared/infrastructure/Errors/ForbiddenError';
