@@ -52,7 +52,7 @@ export class UserAgent extends AggregateRoot {
     }
   }
 
-  fromPrimitives(plainData: {
+  static fromPrimitives(plainData: {
     browser: string;
     engine: string;
     device: string;
